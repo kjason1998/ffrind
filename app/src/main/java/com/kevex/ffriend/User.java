@@ -5,7 +5,7 @@ public class User {
     String email;
     String password;
     String username;
-    int userID;
+    String userID;
     String phoneNumber;
 
     public User(){
@@ -19,7 +19,7 @@ public class User {
         setPhoneNumber(phoneNumber);
     }
 
-    public User(int userID, String email, String password, String username, String phoneNumber){
+    public User(String userID, String email, String password, String username, String phoneNumber){
         setUserID(userID);
         setEmail(email);
         setPassword(password);
@@ -51,11 +51,11 @@ public class User {
         this.username = username;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
