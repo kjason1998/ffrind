@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "853619710816",
+    "firebase_url": "https://psyched-garage-265415.firebaseio.com",
+    "project_id": "psyched-garage-265415",
+    "storage_bucket": "psyched-garage-265415.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853619710816:android:0441b8201a4ab83e62dc05",
+        "android_client_info": {
+          "package_name": "com.kevex.ffriend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSz9PCDHy6t2GtdqyeABP6UkmHxnhwF9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853619710816:android:26c783101ea4566d62dc05",
+        "android_client_info": {
+          "package_name": "com.kevin.ffrind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSz9PCDHy6t2GtdqyeABP6UkmHxnhwF9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
