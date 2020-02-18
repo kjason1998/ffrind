@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(registerIntent);
     }
 
-
+//test
     public void login(View view) {
         userAuthenticate.signOut();
         userAuthenticate.signInWithEmailAndPassword(email, password)
