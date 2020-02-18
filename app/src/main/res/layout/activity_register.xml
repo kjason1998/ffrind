@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
 
+    <Button
+        android:id="@+id/hardcodeRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="register"
+        android:text="Hardcode Register"
+        tools:layout_editor_absoluteX="89dp"
+        tools:layout_editor_absoluteY="87dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

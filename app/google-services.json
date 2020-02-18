@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "853619710816-0c3ub3ifd8stnn9rdn34bsacfqcvtlkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kevex.ffriend",
+            "certificate_hash": "b3caf8fde03a6f0135fc623984a324ddda832789"
+          }
+        },
+        {
+          "client_id": "853619710816-skevcqo392enojp74hrqa3tq5256bvga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kevex.ffriend",
+            "certificate_hash": "0deb0dfa3ce35d531f4a143d4b32c6cff171cd87"
+          }
+        },
+        {
           "client_id": "853619710816-8n87fqu8qsv97tniej4mj24djpnhaaei.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
