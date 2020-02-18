@@ -15,34 +15,13 @@
       },
       "oauth_client": [
         {
-          "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDSz9PCDHy6t2GtdqyeABP6UkmHxnhwF9o"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:853619710816:android:26c783101ea4566d62dc05",
-        "android_client_info": {
-          "package_name": "com.kevin.ffrind"
-        }
-      },
-      "oauth_client": [
+          "client_id": "853619710816-8n87fqu8qsv97tniej4mj24djpnhaaei.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kevex.ffriend",
+            "certificate_hash": "c04cc9931fcf693881037a195fb7a0ab58cce98d"
+          }
+        },
         {
           "client_id": "853619710816-fj97jk7j7bugj0hr9i1npnov5qi80ed9.apps.googleusercontent.com",
           "client_type": 3
