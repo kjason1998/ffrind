@@ -8,18 +8,18 @@ public class User {
     String userID;
     String phoneNumber;
 
-    public User(){
+    public User() {
 
     }
 
-    public User(String email, String password, String username, String phoneNumber){
+    public User(String email, String password, String username, String phoneNumber) {
         setEmail(email);
         setPassword(password);
         setUsername(username);
         setPhoneNumber(phoneNumber);
     }
 
-    public User(String userID, String email, String password, String username, String phoneNumber){
+    public User(String userID, String email, String password, String username, String phoneNumber) {
         setUserID(userID);
         setEmail(email);
         setPassword(password);

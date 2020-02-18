@@ -104,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (location != null) {
                                 wayLatitude = location.getLatitude();
                                 wayLongitude = location.getLongitude();
-                                Toast.makeText(MapsActivity.this.getApplicationContext(), "onRequestPermissionsResult"+String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MapsActivity.this.getApplicationContext(), "onRequestPermissionsResult" + String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -132,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                Toast.makeText(getApplicationContext(),"id is" + circle.getId(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
                 animateCircle(circle);
             }
         };
@@ -163,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (location != null) {
                         wayLatitude = location.getLatitude();
                         wayLongitude = location.getLongitude();
-                        Toast.makeText(MapsActivity.this.getApplicationContext(), "getLocationpermission"+String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MapsActivity.this.getApplicationContext(), "getLocationpermission" + String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
                         getDeviceLocation();
                     }
                 }
@@ -186,8 +186,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(),"getDevicelocationMLocationGrantedTaskSuccess",Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(),""+task.getResult().getLatitude()+" "+task.getResult().getLongitude(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "getDevicelocationMLocationGrantedTaskSuccess", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "" + task.getResult().getLatitude() + " " + task.getResult().getLongitude(), Toast.LENGTH_LONG).show();
                             // Set the map's camera position to the current location of the device.
                             //mLastKnownLocation = task.getResult(); delete this
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -200,13 +200,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
     /**
      * Styling the google map
+     *
      * @param googleMap
      */
     private void setGoogleMapStyles(GoogleMap googleMap) {
@@ -227,10 +228,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * animation clicked for circle
+     *
      * @param circle
      */
-    public void animateCircle(final Circle circle){
-        ValueAnimator vAnimator = ValueAnimator.ofInt(9,10);
+    public void animateCircle(final Circle circle) {
+        ValueAnimator vAnimator = ValueAnimator.ofInt(9, 10);
         //vAnimator.setRepeatCount(ValueAnimator.INFINITE);
         vAnimator.setRepeatMode(ValueAnimator.REVERSE);
         vAnimator.setEvaluator(new IntEvaluator());
@@ -240,11 +242,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int animatedValue = (Integer)valueAnimator.getAnimatedValue();
+                int animatedValue = (Integer) valueAnimator.getAnimatedValue();
                 circle.setRadius(animatedValue);
             }
         });
         vAnimator.start();
-        Toast.makeText(getApplicationContext(),"Finish animation",Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
     }
 }
