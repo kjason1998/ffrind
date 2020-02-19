@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,9 @@ public class RegisterActivity extends AppCompatActivity {
     String password;
     private FirebaseAuth userAuthenticate;
     FirebaseFirestore db;
+    EditText registerEmailInput;
+    EditText registerPasswordInput;
+
     @Override
     public void onStart(){
         super.onStart();
@@ -41,13 +45,16 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         userAuthenticate = FirebaseAuth.getInstance();
-        email = "Testing3@hotmail.com";
-        password = "Testing";
         db = FirebaseFirestore.getInstance();
+        registerEmailInput = findViewById(R.id.registerEmailInput);
+        registerPasswordInput = findViewById(R.id.registerPasswordInput);
     }
 
 
     public void register(View view){
+
+        email = registerEmailInput.getText().toString();
+        password = registerPasswordInput.getText().toString();
 
         userAuthenticate.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

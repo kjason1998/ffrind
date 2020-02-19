@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.view.View;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
     String email;
     String password;
+    EditText emailInput;
+    EditText passwordInput;
     private FirebaseAuth userAuthenticate;
 
     @Override
@@ -24,8 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userAuthenticate = FirebaseAuth.getInstance();
-        email = "Testing1@hotmail.com";
-        password = "Testing";
+        emailInput = findViewById(R.id.emailInput);
+        passwordInput = findViewById(R.id.passwordInput);
     }
 
     public void changeToRegister(View view) {
@@ -33,9 +36,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(registerIntent);
     }
 
-//test
+
     public void login(View view) {
         userAuthenticate.signOut();
+        email = emailInput.getText().toString();
+        password = passwordInput.getText().toString();
+
         userAuthenticate.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
