@@ -32,9 +32,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 
@@ -42,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final String TAG = "MapsActivity";
 
     private final int locationRequestCode = 1000;
+
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
