@@ -74,7 +74,8 @@
                                 android:background="@drawable/background_input_text_login_shadow"
                                 android:paddingStart="@dimen/verticalInputPadding"
                                 android:paddingEnd="@dimen/verticalInputPadding"                                android:paddingBottom="@dimen/bottomInputPadding"
-                                android:paddingTop="@dimen/verticalInputPadding"/>
+                                android:paddingTop="@dimen/verticalInputPadding"
+                                />
                         </LinearLayout>
                     </RelativeLayout>
                     <RelativeLayout
