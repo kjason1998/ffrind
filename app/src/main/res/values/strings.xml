@@ -1,6 +1,37 @@
 <resources>
+    <!-- english -->
+    <!-- general -->
     <string name="app_name">Ffriend</string>
     <string name="title_activity_maps">Map</string>
+
+    <!-- edit text hint form -->
+    <string name="englishHintEmail">Email</string>
+    <string name="englishHintPassword">Password</string>
+    <string name="englishHintPasswordConfirmation">Retype-passwrod</string>
+    <string name="englishHintPhoneNumber">Phone number</string>
+    <string name="englishHintUsername">Username</string>
+
+    <!-- database key -->
+    <!-- users -->
+    <string name="dbUsers">users</string>
+    <string name="dbUserame">username</string>
+    <string name="dbEmail">email</string>
+    <string name="dbPhoneNumber">phone number</string>
+
+    <!-- login -->
+    <!-- login xml -->
+    <string name="loginLoginButton">Login</string>
+    <string name="loginSingUpButton">Sign up</string>
     <!-- login activity -->
-    <string name="loginEnglishHintEmail"></string>
+    <string name="loginMessageLoginSuccess">Welcome back!</string>
+    <string name="loginMessageLoginFailed">Please try again</string>
+
+    <!-- register-->
+    <!-- register xml -->
+    <string name="registerRegisterButton">Register</string>
+    <string name="registerCancelButton">Cancel</string>
+    <!-- register activity -->
+    <string name="registerMessageRegisterSuccess">Success</string>
+    <string name="registerMessageRegisterFailed">Please try again</string>
+    <string name="registerMessagePasswordUnmatched">Password do not match</string>
 </resources>
