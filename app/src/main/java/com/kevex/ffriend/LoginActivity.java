@@ -35,6 +35,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(registerIntent);
     }
 
+    public void changeToHomeScreen(){
+        Intent homeIntent = new Intent(this, MapsActivity.class);
+        startActivity(homeIntent);
+    }
 
     public void login(View view) {
         userAuthenticate.signOut();
@@ -48,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Success",
                                     Toast.LENGTH_LONG).show();
+                            changeToHomeScreen();
                         } else {
                             Toast.makeText(LoginActivity.this, "Failed",
                                     Toast.LENGTH_LONG).show();

@@ -3,6 +3,7 @@ package com.kevex.ffriend;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
@@ -25,11 +26,16 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
     String email;
     String password;
+    String confirmPassword;
+    String username;
+    String phoneNumber;
     private FirebaseAuth userAuthenticate;
     FirebaseFirestore db;
-    EditText registerEmailInput;
-    EditText registerPasswordInput;
-
+    EditText registerEmail;
+    EditText registerPassword;
+    EditText registerUserName;
+    EditText registerPhoneNumber;
+    EditText registerConfirmPassword;
     @Override
     public void onStart(){
         super.onStart();
@@ -46,36 +52,56 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        registerEmailInput = findViewById(R.id.registerEmailInput);
-        registerPasswordInput = findViewById(R.id.registerPasswordInput);
+        registerEmail = findViewById(R.id.registerEmailInput);
+        registerPassword = findViewById(R.id.registerPasswordInput);
+        registerConfirmPassword = findViewById(R.id.registerPasswordConfirmationInput);
+        registerPhoneNumber = findViewById(R.id.registerPhoneNumberInput);
+        registerUserName = findViewById(R.id.registerUserNameInput);
     }
 
     
     public void register(View view){
 
-        email = registerEmailInput.getText().toString();
-        password = registerPasswordInput.getText().toString();
+        email = registerEmail.getText().toString();
+        password = registerPassword.getText().toString();
+        confirmPassword = registerConfirmPassword.getText().toString();
+        phoneNumber = registerPhoneNumber.getText().toString();
+        username = registerUserName.getText().toString();
 
-        userAuthenticate.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "Success",
-                                    Toast.LENGTH_LONG).show();
-                            addUserToDB();
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+        if(password.matches(confirmPassword)) {
+            userAuthenticate.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterActivity.this, "Success",
+                                        Toast.LENGTH_LONG).show();
+                                addUserToDB();
+                                changeToHomeScreen();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            Toast.makeText(RegisterActivity.this, "Passwords do not match",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
+
+    public void changeToHomeScreen(){
+        Intent homeIntent = new Intent(this, MapsActivity.class);
+        startActivity(homeIntent);
+    }
+
 
     public void addUserToDB(){
 
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
+        user.put("username", username);
+        user.put("phone number", phoneNumber);
 
         // Add a new document with a generated ID
         db.collection("users")
