@@ -90,7 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 addUserToDB();
-                                changeToHomeScreen();
                             } else {
                                 Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
                                         Toast.LENGTH_SHORT).show();
@@ -115,6 +114,17 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      *
+     * android:onClick cancel button
+     *
+     * go to previous screen (loggin activity)
+     *
+     */
+    public void back(View view){
+        finish();
+    }
+
+    /**
+     *
      * add the new user to the database (Firestore)
      *
      */
@@ -133,6 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterSuccess),
                                 Toast.LENGTH_LONG).show();
+                        changeToHomeScreen();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
