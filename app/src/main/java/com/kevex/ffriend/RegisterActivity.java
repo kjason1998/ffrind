@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerPasswordInput = findViewById(R.id.registerPasswordInput);
     }
 
-
+    
     public void register(View view){
 
         email = registerEmailInput.getText().toString();
@@ -68,7 +68,6 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
     }
@@ -78,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
 
-// Add a new document with a generated ID
+        // Add a new document with a generated ID
         db.collection("users")
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -95,7 +94,5 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-
-
     }
 }

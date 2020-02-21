@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="inpuStringSize">13sp</dimen>
+    <dimen name="horizontalInputPadding">10dp</dimen>
+    <dimen name="verticalInputPadding">10dp</dimen>
+
+    <!-- register -->
+    <dimen name="bottomInputPadding">14dp</dimen>
+</resources>

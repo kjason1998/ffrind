@@ -1,45 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".RegisterActivity"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
-    <EditText
-        android:id="@+id/registerPasswordInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.565"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.482" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/registerEmailInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Enter email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.631"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.36" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-    <Button
-        android:id="@+id/hardcodeRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="register"
-        android:text="Register"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="442dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/main_logo"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.3">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/registerUserNameInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Username"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <EditText
+                            android:id="@+id/registerEmailInput"
+                            android:inputType="textEmailAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Email address"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <EditText
+                            android:id="@+id/registerPhoneNumberInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Phone number"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <EditText
+                            android:id="@+id/registerPasswordInput"
+                            android:inputType="textPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Password"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:textStyle="normal"
+                            android:textFontWeight="100"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <EditText
+                            android:id="@+id/registerPasswordConfirmationInput"
+                            android:inputType="textPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Password confirmation"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_horizontal">
+
+                            <Button
+                                android:id="@+id/registerRegisterButton"
+                                android:background="@drawable/background_button_green"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="10dp"
+                                android:onClick="register"
+                                android:text="Register" />
+
+                            <Button
+                                android:id="@+id/registerCancelButton"
+                                android:background="@drawable/background_button_pink"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="10dp"
+                                android:onClick="register"
+                                android:text="cancel" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

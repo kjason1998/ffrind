@@ -58,10 +58,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
                                 android:hint="Email address"
-                                android:textColor="@color/colorTextInput"
+                                android:textSize="@dimen/inpuStringSize"
                                 android:background="@drawable/background_input_text_login_shadow"
-                                android:padding="10dp"
-                                />
+                                android:paddingStart="@dimen/verticalInputPadding"
+                                android:paddingEnd="@dimen/verticalInputPadding"                                android:paddingBottom="@dimen/bottomInputPadding"
+                                android:paddingTop="@dimen/verticalInputPadding"/>
                             <EditText
                                 android:id="@+id/passwordInput"
                                 android:inputType="textPassword"
@@ -69,11 +70,11 @@
                                 android:layout_height="40dp"
                                 android:hint="Password"
                                 android:textStyle="normal"
-                                android:textFontWeight="100"
-                                android:textColor="@color/colorTextInput"
+                                android:textSize="@dimen/inpuStringSize"
                                 android:background="@drawable/background_input_text_login_shadow"
-                                android:padding="10dp"
-                                />
+                                android:paddingStart="@dimen/verticalInputPadding"
+                                android:paddingEnd="@dimen/verticalInputPadding"                                android:paddingBottom="@dimen/bottomInputPadding"
+                                android:paddingTop="@dimen/verticalInputPadding"/>
                         </LinearLayout>
                     </RelativeLayout>
                     <RelativeLayout
