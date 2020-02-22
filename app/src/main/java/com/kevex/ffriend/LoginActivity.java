@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
+
     private String email;
     private String password;
     private EditText emailInput;

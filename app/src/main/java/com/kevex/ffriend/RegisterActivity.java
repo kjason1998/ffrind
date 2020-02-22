@@ -76,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
      * @param view
      */
     public void register(View view){
+        Toast.makeText(RegisterActivity.this, TAG + " register button clicked",
+                Toast.LENGTH_SHORT).show();
 
         email = registerEmail.getText().toString();
         password = registerPassword.getText().toString();

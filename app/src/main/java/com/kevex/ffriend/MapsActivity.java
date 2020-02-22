@@ -57,13 +57,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);// Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
         mapFragment.getMapAsync(this);
 
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.mapBottomSheet);
+        bottomSheetInitializer(llBottomSheet);
+    }
 
+    private void bottomSheetInitializer(LinearLayout llBottomSheet) {
         // init the bottom sheet behavior
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
@@ -73,24 +75,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // set the peek height
-        bottomSheetBehavior.setPeekHeight(80);
+        bottomSheetBehavior.setPeekHeight(120);
 
         // set hideable or not
         bottomSheetBehavior.setHideable(false);
 
         // set callback for changes
         bottomSheetBehavior.setBottomSheetCallback(
-            new BottomSheetBehavior.BottomSheetCallback() {
-               @Override
-               public void onStateChanged(@NonNull View view, int i) {
+                new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View view, int i) {
 
-               }
+                    }
 
-               @Override
-               public void onSlide(@NonNull View view, float v) {
+                    @Override
+                    public void onSlide(@NonNull View view, float v) {
 
-               }
-           });
+                    }
+                });
     }
 
     /**

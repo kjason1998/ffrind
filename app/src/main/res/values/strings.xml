@@ -34,4 +34,13 @@
     <string name="registerMessageRegisterSuccess">Success</string>
     <string name="registerMessageRegisterFailed">Please try again</string>
     <string name="registerMessagePasswordUnmatched">Password do not match</string>
+
+    <!-- profile -->
+    <!-- profile xml -->
+    <string name="profileDefaultUsername">Kevin Jason</string>
+    <string name="profileGenderMale"> Male</string>
+    <string name="profileGenderFemale"> Female</string>
+    <string name="profileDefaultAge">Years old/</string>
+    <string name="profileDefaultDescription">        In a library, the word biography refers both to a kind of book and to a section where books of that kind are found. Each biography tells the story of a real person\'s life. A biography may be about someone who lived long ago, recently, or even someone who is still living, though in the last case it must necessarily be incomplete. The term autobiograp</string>
+    <!-- profile activity -->
 </resources>
