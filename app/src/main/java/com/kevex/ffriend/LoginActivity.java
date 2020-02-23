@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,8 +31,19 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         userAuthenticate = FirebaseAuth.getInstance();
+
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = userAuthenticate.getCurrentUser();
+
+        if(currentUser != null){
+            changeToHomeScreen();
+        }
     }
 
     /**
