@@ -36,12 +36,13 @@ public class RegisterActivity extends AppCompatActivity {
     EditText registerUserName;
     EditText registerPhoneNumber;
     EditText registerConfirmPassword;
+
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
         FirebaseUser currentUser = userAuthenticate.getCurrentUser();
-        if(currentUser != null) {
+        if (currentUser != null) {
             System.out.println(currentUser.toString());
         }
     }
@@ -59,8 +60,8 @@ public class RegisterActivity extends AppCompatActivity {
         registerUserName = findViewById(R.id.registerUserNameInput);
     }
 
-    
-    public void register(View view){
+
+    public void register(View view) {
 
         email = registerEmail.getText().toString();
         password = registerPassword.getText().toString();
@@ -68,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = registerPhoneNumber.getText().toString();
         username = registerUserName.getText().toString();
 
-        if(password.matches(confirmPassword)) {
+        if (password.matches(confirmPassword)) {
             userAuthenticate.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -90,13 +91,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void changeToHomeScreen(){
+    public void changeToHomeScreen() {
         Intent homeIntent = new Intent(this, MapsActivity.class);
         startActivity(homeIntent);
     }
 
 
-    public void addUserToDB(){
+    public void addUserToDB() {
 
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
@@ -120,5 +121,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    public void cancel(View view) {
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }
