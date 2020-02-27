@@ -24,25 +24,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
-    String email;
-    String password;
-    String confirmPassword;
-    String username;
-    String phoneNumber;
+    private final static String TAG = "RegisterActivity";
+
+    private String email;
+    private String password;
+    private String confirmPassword;
+    private String username;
+    private String phoneNumber;
+
     private FirebaseAuth userAuthenticate;
-    FirebaseFirestore db;
-    EditText registerEmail;
-    EditText registerPassword;
-    EditText registerUserName;
-    EditText registerPhoneNumber;
-    EditText registerConfirmPassword;
+    private FirebaseFirestore db;
+
+    private EditText registerEmail;
+    private EditText registerPassword;
+    private EditText registerUserName;
+    private EditText registerPhoneNumber;
+    private EditText registerConfirmPassword;
 
     @Override
-    public void onStart() {
+    public void onStart(){
         super.onStart();
-
+        // ????????????????????????
         FirebaseUser currentUser = userAuthenticate.getCurrentUser();
-        if (currentUser != null) {
+        if(currentUser != null) {
             System.out.println(currentUser.toString());
         }
     }
@@ -51,8 +55,12 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //setting up Firebase
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        //inputs
         registerEmail = findViewById(R.id.registerEmailInput);
         registerPassword = findViewById(R.id.registerPasswordInput);
         registerConfirmPassword = findViewById(R.id.registerPasswordConfirmationInput);
@@ -60,8 +68,16 @@ public class RegisterActivity extends AppCompatActivity {
         registerUserName = findViewById(R.id.registerUserNameInput);
     }
 
-
-    public void register(View view) {
+    /**
+     *
+     * android:onClick for register button
+     * This will register a new user
+     *
+     * @param view
+     */
+    public void register(View view){
+        Toast.makeText(RegisterActivity.this, TAG + " register button clicked",
+                Toast.LENGTH_SHORT).show();
 
         email = registerEmail.getText().toString();
         password = registerPassword.getText().toString();
@@ -69,61 +85,76 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = registerPhoneNumber.getText().toString();
         username = registerUserName.getText().toString();
 
-        if (password.matches(confirmPassword)) {
+        if(password.matches(confirmPassword)) {
             userAuthenticate.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this, "Success",
-                                        Toast.LENGTH_LONG).show();
                                 addUserToDB();
-                                changeToHomeScreen();
                             } else {
-                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         } else {
-            Toast.makeText(RegisterActivity.this, "Passwords do not match",
+            Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void changeToHomeScreen() {
+    /**
+     *
+     * go to home screen (map activity)
+     *
+     */
+    public void changeToHomeScreen(){
         Intent homeIntent = new Intent(this, MapsActivity.class);
         startActivity(homeIntent);
     }
 
+    /**
+     *
+     * android:onClick cancel button
+     *
+     * go to previous screen (loggin activity)
+     *
+     */
+    public void back(View view){
+        finish();
+    }
 
-    public void addUserToDB() {
+    /**
+     *
+     * add the new user to the database (Firestore)
+     *
+     */
+    public void addUserToDB(){
 
         Map<String, Object> user = new HashMap<>();
-        user.put("email", email);
-        user.put("username", username);
-        user.put("phone number", phoneNumber);
+        user.put(getResources().getString(R.string.dbEmail), email);
+        user.put(getResources().getString(R.string.dbUserame), username);
+        user.put(getResources().getString(R.string.dbPhoneNumber), phoneNumber);
 
         // Add a new document with a generated ID
-        db.collection("users")
+        db.collection(getResources().getString(R.string.dbUsers))
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(RegisterActivity.this, "DocumentSnapshot added with ID: " + documentReference.getId(),
+                        Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterSuccess),
                                 Toast.LENGTH_LONG).show();
+                        changeToHomeScreen();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Error adding document" + e,
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG,"Error adding document to Firestore :" + e);
                     }
                 });
-    }
-
-    public void cancel(View view) {
-        startActivity(new Intent(this, LoginActivity.class));
     }
 }

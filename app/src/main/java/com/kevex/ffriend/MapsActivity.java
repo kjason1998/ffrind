@@ -1,8 +1,8 @@
 package com.kevex.ffriend;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.animation.IntEvaluator;
@@ -13,13 +13,13 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,10 +32,13 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import java.util.Locale;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+
     private final String TAG = "MapsActivity";
 
     private final int locationRequestCode = 1000;
@@ -54,9 +57,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);// Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
         mapFragment.getMapAsync(this);
+
+        bottomSheetInitializer(llBottomSheet);
+    }
+
+    private void bottomSheetInitializer(LinearLayout llBottomSheet) {
+        // init the bottom sheet behavior
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
+
+        // change the state of the bottom sheet
+        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        // set the peek height
+        bottomSheetBehavior.setPeekHeight(120);
+
+        // set hideable or not
+        bottomSheetBehavior.setHideable(false);
+
+        // set callback for changes
+        bottomSheetBehavior.setBottomSheetCallback(
+                new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View view, int i) {
+
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View view, float v) {
+
+                    }
+                });
     }
 
     /**

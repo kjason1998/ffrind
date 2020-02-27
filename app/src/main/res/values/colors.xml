@@ -4,4 +4,13 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorTextInput">#000000</color>
+    <color name="colorGreenDefault">#5BACA3</color>
+    <color name="colorPinkDefault">#F4B9C1</color>
+
+    <!-- profile -->
+    <color name="cardViewDefaultBg">#FAFAFA</color>
+    <color name="cardViewHookDefaultBg">#EAEAEA</color>
+    <color name="cardViewProfileBg">#FFFFFF</color>
+    <color name="cardViewProfileDescription">#50000000</color>
+    <color name="cardViewProfilePointString">#FF7A7A</color>
 </resources>

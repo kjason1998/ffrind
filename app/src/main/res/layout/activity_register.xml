@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,25 +9,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="0.3"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:src="@drawable/main_logo"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3">
+            android:layout_weight="1.7">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,9 +46,10 @@
                         android:orientation="vertical">
                         <EditText
                             android:id="@+id/registerUserNameInput"
+                            android:inputType="textVisiblePassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Username"
+                            android:hint="@string/englishHintUsername"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
@@ -62,7 +61,7 @@
                             android:inputType="textEmailAddress"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:hint="Email address"
+                            android:hint="@string/englishHintEmail"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
@@ -71,9 +70,10 @@
                             android:paddingTop="@dimen/verticalInputPadding"/>
                         <EditText
                             android:id="@+id/registerPhoneNumberInput"
+                            android:inputType="phone"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:hint="Phone number"
+                            android:hint="@string/englishHintPhoneNumber"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
@@ -85,10 +85,9 @@
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:hint="Password"
+                            android:hint="@string/englishHintPassword"
                             android:textSize="@dimen/inpuStringSize"
                             android:textStyle="normal"
-                            android:textFontWeight="100"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
                             android:paddingEnd="@dimen/verticalInputPadding"
@@ -99,7 +98,7 @@
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:hint="Password confirmation"
+                            android:hint="@string/englishHintPasswordConfirmation"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
@@ -115,21 +114,21 @@
 
                             <Button
                                 android:id="@+id/registerRegisterButton"
+                                android:onClick="register"
+                                android:text="@string/registerRegisterButton"
                                 android:background="@drawable/background_button_green"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="10dp"
-                                android:onClick="register"
-                                android:text="Register" />
+                                android:layout_marginEnd="@dimen/verticalInputPadding"/>
 
                             <Button
                                 android:id="@+id/registerCancelButton"
+                                android:onClick="back"
+                                android:text="@string/registerCancelButton"
                                 android:background="@drawable/background_button_pink"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="10dp"
-                                android:onClick="cancel"
-                                android:text="cancel" />
+                                android:layout_marginStart="@dimen/verticalInputPadding"/>
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>

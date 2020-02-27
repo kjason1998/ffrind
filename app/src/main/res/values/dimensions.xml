@@ -4,7 +4,16 @@
     <dimen name="inpuStringSize">13sp</dimen>
     <dimen name="horizontalInputPadding">10dp</dimen>
     <dimen name="verticalInputPadding">10dp</dimen>
+    <dimen name="textViewDefault">12sp</dimen>
 
     <!-- register -->
     <dimen name="bottomInputPadding">14dp</dimen>
+
+    <!-- profile -->
+    <!-- profile card view -->
+    <dimen name="profileCardViewRadius">20dp</dimen>
+    <dimen name="profileCardViewPadding">12.5dp</dimen>
+    <dimen name="profileCardViewMargin">15dp</dimen>
+    <dimen name="profileCardVewHeight">370dp</dimen>
+
 </resources>
