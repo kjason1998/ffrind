@@ -77,6 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // set the peek height
         bottomSheetBehavior.setPeekHeight(120);
 
+
         // set hideable or not
         bottomSheetBehavior.setHideable(false);
 
