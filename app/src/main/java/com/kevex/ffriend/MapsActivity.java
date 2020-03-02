@@ -1,9 +1,5 @@
 package com.kevex.ffriend;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
@@ -11,13 +7,20 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
@@ -33,8 +36,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
+import java.util.Random;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -42,14 +50,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final String TAG = "MapsActivity";
 
     private final int locationRequestCode = 1000;
-
+    private FirebaseAuth userAuthenticate;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
 
     private boolean mLocationPermissionGranted;
-
+    private String avatarString;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
+    private static ImageView avatar;
+    Uri avatarURL;
+    private final String AVATAR_ONE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2";
+    private final String AVATAR_TWO = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829";
+    private final String AVATAR_THREE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%203.jpg?alt=media&token=c250e79f-e6c0-488b-8263-cf057e63bd98";
+    private final String AVATAR_FOUR = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%204.jpg?alt=media&token=63ee938d-8e1a-4c00-9661-27d4d1f86366";
+    private final String AVATAR_FIVE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%205.jpg?alt=media&token=c28bcdab-27e4-48ef-b4d7-bb123848edf4";
+    private final String AVATAR_SIX = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%206.jpg?alt=media&token=7b1e7f7c-7e39-4c0d-979c-081fa0b534df";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +80,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
         mapFragment.getMapAsync(this);
-
+        userAuthenticate = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        currentUser = userAuthenticate.getCurrentUser();
         bottomSheetInitializer(llBottomSheet);
+        if(currentUser.getPhotoUrl() == null){
+            updateUserAvatar();
+        }
+        avatar = findViewById(R.id.avatarImageView);
+        Glide.with(MapsActivity.this)
+                .load(Uri.parse(AVATAR_ONE))
+                .into(avatar);
+
+
     }
+
 
     private void bottomSheetInitializer(LinearLayout llBottomSheet) {
         // init the bottom sheet behavior
@@ -283,5 +314,46 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         vAnimator.start();
         Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
+    }
+
+    public String assignAvatar(){
+        Random random = new Random();
+        int avatar = random.nextInt(5);
+
+        if(avatar == 0){
+            avatarString = AVATAR_ONE;
+        }
+        if(avatar == 1){
+            avatarString = AVATAR_TWO;
+        }
+        if(avatar == 2){
+            avatarString = AVATAR_THREE;
+        }
+        if(avatar == 3){
+            avatarString = AVATAR_FOUR;
+        }
+        if(avatar == 4){
+            avatarString = AVATAR_FIVE;
+        }
+        if(avatar == 5){
+            avatarString = AVATAR_SIX;
+        }
+        return avatarString;
+    }
+
+    public void updateUserAvatar(){
+        String url = assignAvatar();
+        avatarURL = Uri.parse(url);
+        Toast.makeText(MapsActivity.this, "URL STRING: " + url,
+                Toast.LENGTH_SHORT).show();
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(avatarURL).build();
+        FirebaseUser currentUser = userAuthenticate.getCurrentUser();
+        Toast.makeText(MapsActivity.this, "OLD URL: " + currentUser.getPhotoUrl(),
+                Toast.LENGTH_SHORT).show();
+        currentUser.updateProfile(request);
+        Toast.makeText(MapsActivity.this, "NEW URL: " + currentUser.getPhotoUrl(),
+                Toast.LENGTH_SHORT).show();
+
     }
 }

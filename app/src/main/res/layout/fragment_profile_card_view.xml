@@ -30,7 +30,9 @@
                     android:background="@color/cardViewProfileBg"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
+
                         <ImageView
+                            android:id="@+id/avatarImageView"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="6"
