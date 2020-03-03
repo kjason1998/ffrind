@@ -41,7 +41,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Locale;
 import java.util.Random;
@@ -64,6 +67,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double wayLatitude = 0.0, wayLongitude = 0.0;
     private static ImageView avatar;
     private TextView usernameDisplay;
+    private TextView userBioDisplay;
     Uri avatarURL;
     private final String AVATAR_ONE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2";
     private final String AVATAR_TWO = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829";
@@ -88,8 +92,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
         Bundle bundle = getIntent().getExtras();
-        username = bundle.getString("username");
-        updateUsername(username);
+        if(bundle != null) {
+            username = bundle.getString("username");
+            updateUsername(username);
+        }
+
         Toast.makeText(MapsActivity.this.getApplicationContext(), "USERNAME=>" + currentUser.getDisplayName(),
                 Toast.LENGTH_SHORT).show();
 
@@ -103,10 +110,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void run() {
                 avatar = findViewById(R.id.avatarImageView);
                 usernameDisplay = findViewById(R.id.profileUserNameInfo);
+                userBioDisplay = findViewById(R.id.profileBioInfo);
+
             }
         });
         bottomSheetInitializer(llBottomSheet);
-
+        getUserBio();
     }
 
     /**
@@ -155,6 +164,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .placeholder(R.drawable.avatar_default)
                                         .into(avatar);
                                 usernameDisplay.setText(currentUser.getDisplayName());
+
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
                                 break;
@@ -413,5 +423,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(username).build();
         userAuthenticate.getCurrentUser().updateProfile(request);
+    }
+
+    public void updateUserBio(String bio){
+        userBioDisplay.setText(bio);
+    }
+
+    public void getUserBio(){
+        db.collection("users")
+                .document(currentUser.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if(document.exists()){
+                                if(document.getString("bio") != null){
+                                    String userBio = document.getString("bio");
+                                    Toast.makeText(getApplicationContext(), userBio, Toast.LENGTH_LONG).show();
+                                    updateUserBio(userBio);
+                                }else{
+                                    updateUserBio("N/A");
+                                }
+                            }
+                        }
+                    }
+                });
+
     }
 }

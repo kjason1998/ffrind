@@ -143,10 +143,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Add a new document with a generated ID
         db.collection(getResources().getString(R.string.dbUsers))
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(userAuthenticate.getCurrentUser().getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterSuccess),
                                 Toast.LENGTH_LONG).show();
                         changeToHomeScreen();
