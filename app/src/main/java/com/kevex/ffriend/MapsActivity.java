@@ -85,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //changeToRegister();
+        changeToRegister();
         getLocationPermission();
         mapFragment.getMapAsync(this);
         userAuthenticate = FirebaseAuth.getInstance();
