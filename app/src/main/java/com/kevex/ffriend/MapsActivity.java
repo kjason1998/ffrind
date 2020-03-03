@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,7 +42,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,7 +73,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);// Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
@@ -89,14 +89,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentUser = userAuthenticate.getCurrentUser();
         currentUserRef = db.collection(this.getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
+        //setup tool bar
         mToolbar = findViewById(R.id.maps_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Maps");
 
+        //initialize bottom sheet
         bottomSheetInitializer(llBottomSheet);
-
-        // delete this
-        getUserBio();
     }
 
     /**
@@ -107,6 +106,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param llBottomSheet
      */
     private void bottomSheetInitializer(LinearLayout llBottomSheet) {
+
+        // initialize the information components inside this fragment
         llBottomSheet.post(new Runnable() {
 
             @Override
@@ -123,11 +124,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // set the peek height
         bottomSheetBehavior.setPeekHeight(120);
 
-
-        // set hideable or not
+        // set hide able or not
         bottomSheetBehavior.setHideable(false);
-
-
 
         // set callback for changes
         bottomSheetBehavior.setBottomSheetCallback(
@@ -177,11 +175,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 });
-    }
-
-    public void loggout(){
-        Intent loggout = new Intent(this, LoginActivity.class);
-        startActivity(loggout);
     }
 
     /**
@@ -378,6 +371,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      *
+     * set the user profile picture that have been randomly
+     * assigned when user registered.
+     *
      */
     public void updateUserAvatar(View bottomSheet){
         Glide.with(bottomSheet)
@@ -386,41 +382,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .into(avatar);
     }
 
-    public void updateUsername(String username){
-        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username).build();
-        userAuthenticate.getCurrentUser().updateProfile(request);
-    }
-
-    public void updateUserBio(String bio){
-        //userBioDisplay.setText(bio);
-    }
-
-    public void getUserBio(){
-        db.collection("users")
-                .document(currentUser.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            if(document.exists()){
-                                if(document.getString("bio") != null){
-                                    String userBio = document.getString("bio");
-                                    Toast.makeText(getApplicationContext(), userBio, Toast.LENGTH_LONG).show();
-                                    updateUserBio(userBio);
-                                }else{
-                                    updateUserBio("N/A");
-                                }
-                            }
-                        }
-                    }
-                });
-    }
-
     /**
-     * This method is for logging out when called
+     * This method is for logging out when called from menu
      */
     private void LogOutUser() {
         Intent startPageIntent =
