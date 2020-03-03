@@ -83,19 +83,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
+        llBottomSheet.post(new Runnable() {
+            @Override
+            public void run() {
+                avatar = findViewById(R.id.avatarImageView);
+            }
+        });
         bottomSheetInitializer(llBottomSheet);
-        if(currentUser.getPhotoUrl() == null){
-            updateUserAvatar();
-        }
-        avatar = findViewById(R.id.avatarImageView);
-        Glide.with(MapsActivity.this)
-                .load(Uri.parse(AVATAR_ONE))
-                .into(avatar);
-
-
+//        if(currentUser.getPhotoUrl() == null){
+//            updateUserAvatar();
+//        }
     }
 
-
+    /**
+     *
+     * author: kevin jason
+     * initiate the card view profile and give animation dragging out and in
+     *
+     * @param llBottomSheet
+     */
     private void bottomSheetInitializer(LinearLayout llBottomSheet) {
         // init the bottom sheet behavior
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
@@ -112,19 +118,71 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // set hideable or not
         bottomSheetBehavior.setHideable(false);
 
+
+
         // set callback for changes
         bottomSheetBehavior.setBottomSheetCallback(
                 new BottomSheetBehavior.BottomSheetCallback() {
-                    @Override
-                    public void onStateChanged(@NonNull View view, int i) {
-
-                    }
 
                     @Override
                     public void onSlide(@NonNull View view, float v) {
 
                     }
+
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        switch (newState) {
+                            case BottomSheetBehavior.STATE_HIDDEN:
+
+                                break;
+                            case BottomSheetBehavior.STATE_EXPANDED:
+                                Glide.with(bottomSheet)
+                                        .load(assignAvatar())
+                                        .placeholder(R.drawable.avatar_default)
+                                        .into(avatar);
+                                break;
+                            case BottomSheetBehavior.STATE_COLLAPSED:
+                                break;
+                            case BottomSheetBehavior.STATE_DRAGGING:
+                                break;
+                            case BottomSheetBehavior.STATE_SETTLING:
+
+                                break;
+                        }
+                        Log.d(TAG, "onStateChanged: " + newState);
+                    }
+
                 });
+    }
+
+    /**
+     * randomly assign the avatar
+     *
+     * @return
+     */
+    private String assignAvatar(){
+        Random random = new Random();
+        int avatar = random.nextInt(5);
+
+        if(avatar == 0){
+            avatarString = AVATAR_ONE;
+        }
+        if(avatar == 1){
+            avatarString = AVATAR_TWO;
+        }
+        if(avatar == 2){
+            avatarString = AVATAR_THREE;
+        }
+        if(avatar == 3){
+            avatarString = AVATAR_FOUR;
+        }
+        if(avatar == 4){
+            avatarString = AVATAR_FIVE;
+        }
+        if(avatar == 5){
+            avatarString = AVATAR_SIX;
+        }
+        return avatarString;
     }
 
     /**
@@ -293,6 +351,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     *
+     * author: Kevin Jason
+     *
      * animation clicked for circle
      *
      * @param circle
@@ -316,31 +377,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
     }
 
-    public String assignAvatar(){
-        Random random = new Random();
-        int avatar = random.nextInt(5);
-
-        if(avatar == 0){
-            avatarString = AVATAR_ONE;
-        }
-        if(avatar == 1){
-            avatarString = AVATAR_TWO;
-        }
-        if(avatar == 2){
-            avatarString = AVATAR_THREE;
-        }
-        if(avatar == 3){
-            avatarString = AVATAR_FOUR;
-        }
-        if(avatar == 4){
-            avatarString = AVATAR_FIVE;
-        }
-        if(avatar == 5){
-            avatarString = AVATAR_SIX;
-        }
-        return avatarString;
-    }
-
+    /**
+     *
+     */
     public void updateUserAvatar(){
         String url = assignAvatar();
         avatarURL = Uri.parse(url);

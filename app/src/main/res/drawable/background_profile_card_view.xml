@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="1dp"
         android:topLeftRadius="20dp"
-        android:topRightRadius="30dp"/>
+        android:topRightRadius="20dp"/>
     <solid android:color="@color/cardViewDefaultBg" />
 </shape>
