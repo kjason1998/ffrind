@@ -83,16 +83,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
+
+        if(currentUser.getPhotoUrl() == null){
+              updateUserAvatar();
+        }
+
         llBottomSheet.post(new Runnable() {
+
             @Override
             public void run() {
                 avatar = findViewById(R.id.avatarImageView);
             }
         });
         bottomSheetInitializer(llBottomSheet);
-//        if(currentUser.getPhotoUrl() == null){
-//            updateUserAvatar();
-//        }
+
     }
 
     /**
@@ -137,7 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
                                 Glide.with(bottomSheet)
-                                        .load(assignAvatar())
+                                        .load(currentUser.getPhotoUrl())
                                         .placeholder(R.drawable.avatar_default)
                                         .into(avatar);
                                 break;
@@ -383,16 +387,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void updateUserAvatar(){
         String url = assignAvatar();
         avatarURL = Uri.parse(url);
-        Toast.makeText(MapsActivity.this, "URL STRING: " + url,
-                Toast.LENGTH_SHORT).show();
+
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(avatarURL).build();
-        FirebaseUser currentUser = userAuthenticate.getCurrentUser();
-        Toast.makeText(MapsActivity.this, "OLD URL: " + currentUser.getPhotoUrl(),
-                Toast.LENGTH_SHORT).show();
-        currentUser.updateProfile(request);
-        Toast.makeText(MapsActivity.this, "NEW URL: " + currentUser.getPhotoUrl(),
-                Toast.LENGTH_SHORT).show();
 
+        currentUser.updateProfile(request);
     }
 }
