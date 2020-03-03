@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -102,6 +103,8 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
                     Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     /**
@@ -111,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void changeToHomeScreen(){
         Intent homeIntent = new Intent(this, MapsActivity.class);
+        homeIntent.putExtra("username", username);
         startActivity(homeIntent);
     }
 
@@ -156,5 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.e(TAG,"Error adding document to Firestore :" + e);
                     }
                 });
+
+
     }
 }

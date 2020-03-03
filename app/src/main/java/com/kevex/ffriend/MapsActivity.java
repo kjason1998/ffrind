@@ -3,6 +3,7 @@ package com.kevex.ffriend;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,6 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String avatarString;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
     private static ImageView avatar;
+    private TextView usernameDisplay;
     Uri avatarURL;
     private final String AVATAR_ONE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2";
     private final String AVATAR_TWO = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829";
@@ -68,7 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final String AVATAR_FOUR = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%204.jpg?alt=media&token=63ee938d-8e1a-4c00-9661-27d4d1f86366";
     private final String AVATAR_FIVE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%205.jpg?alt=media&token=c28bcdab-27e4-48ef-b4d7-bb123848edf4";
     private final String AVATAR_SIX = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%206.jpg?alt=media&token=7b1e7f7c-7e39-4c0d-979c-081fa0b534df";
-
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +81,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //changeToRegister();
         getLocationPermission();
         mapFragment.getMapAsync(this);
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
+        Bundle bundle = getIntent().getExtras();
+        username = bundle.getString("username");
+        updateUsername(username);
+        Toast.makeText(MapsActivity.this.getApplicationContext(), "USERNAME=>" + currentUser.getDisplayName(),
+                Toast.LENGTH_SHORT).show();
 
         if(currentUser.getPhotoUrl() == null){
               updateUserAvatar();
@@ -93,6 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 avatar = findViewById(R.id.avatarImageView);
+                usernameDisplay = findViewById(R.id.profileUserNameInfo);
             }
         });
         bottomSheetInitializer(llBottomSheet);
@@ -144,6 +154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .load(currentUser.getPhotoUrl())
                                         .placeholder(R.drawable.avatar_default)
                                         .into(avatar);
+                                usernameDisplay.setText(currentUser.getDisplayName());
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
                                 break;
@@ -159,6 +170,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
+    public void changeToRegister(){
+        Intent reg = new Intent(this, RegisterActivity.class);
+        startActivity(reg);
+    }
     /**
      * randomly assign the avatar
      *
@@ -392,5 +407,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setPhotoUri(avatarURL).build();
 
         currentUser.updateProfile(request);
+    }
+
+    public void updateUsername(String username){
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username).build();
+        userAuthenticate.getCurrentUser().updateProfile(request);
     }
 }

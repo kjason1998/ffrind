@@ -54,7 +54,6 @@
                                     android:id="@+id/profileUserNameInfo"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/profileDefaultUsername"
                                     android:textColor="@color/colorGreenDefault"
                                     android:textSize="22sp"
                                     android:textStyle="bold" />
