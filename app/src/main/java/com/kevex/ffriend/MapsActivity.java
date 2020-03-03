@@ -11,6 +11,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
@@ -41,13 +44,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Locale;
-import java.util.Random;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -57,25 +58,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int locationRequestCode = 1000;
     private FirebaseAuth userAuthenticate;
     private FirebaseFirestore db;
+    private DocumentReference currentUserRef;
     private FirebaseUser currentUser;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
 
     private boolean mLocationPermissionGranted;
-    private String avatarString;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
-    private static ImageView avatar;
+
+    private Toolbar mToolbar;
+    private ImageView avatar;
     private TextView usernameDisplay;
     private TextView userBioDisplay;
-    Uri avatarURL;
-    private final String AVATAR_ONE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2";
-    private final String AVATAR_TWO = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829";
-    private final String AVATAR_THREE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%203.jpg?alt=media&token=c250e79f-e6c0-488b-8263-cf057e63bd98";
-    private final String AVATAR_FOUR = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%204.jpg?alt=media&token=63ee938d-8e1a-4c00-9661-27d4d1f86366";
-    private final String AVATAR_FIVE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%205.jpg?alt=media&token=c28bcdab-27e4-48ef-b4d7-bb123848edf4";
-    private final String AVATAR_SIX = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%206.jpg?alt=media&token=7b1e7f7c-7e39-4c0d-979c-081fa0b534df";
-    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,36 +80,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        changeToLogin();
         getLocationPermission();
         mapFragment.getMapAsync(this);
+
+        // Firebase initialize
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            username = bundle.getString("username");
-            updateUsername(username);
-        }
+        currentUserRef = db.collection(this.getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
-        Toast.makeText(MapsActivity.this.getApplicationContext(), "USERNAME=>" + currentUser.getDisplayName(),
-                Toast.LENGTH_SHORT).show();
+        mToolbar = findViewById(R.id.maps_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Maps");
 
-        if(currentUser.getPhotoUrl() == null){
-              updateUserAvatar();
-        }
-
-        llBottomSheet.post(new Runnable() {
-
-            @Override
-            public void run() {
-                avatar = findViewById(R.id.avatarImageView);
-                usernameDisplay = findViewById(R.id.profileUserNameInfo);
-                userBioDisplay = findViewById(R.id.profileBioInfo);
-
-            }
-        });
         bottomSheetInitializer(llBottomSheet);
+
+        // delete this
         getUserBio();
     }
 
@@ -126,13 +107,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param llBottomSheet
      */
     private void bottomSheetInitializer(LinearLayout llBottomSheet) {
+        llBottomSheet.post(new Runnable() {
+
+            @Override
+            public void run() {
+                avatar = findViewById(R.id.avatarImageView);
+                usernameDisplay = findViewById(R.id.profileUserNameInfo);
+                userBioDisplay = findViewById(R.id.profileBioInfo);
+            }
+        });
+
         // init the bottom sheet behavior
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
-
-        // change the state of the bottom sheet
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         // set the peek height
         bottomSheetBehavior.setPeekHeight(120);
@@ -159,10 +145,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
-                                Glide.with(bottomSheet)
-                                        .load(currentUser.getPhotoUrl())
-                                        .placeholder(R.drawable.avatar_default)
-                                        .into(avatar);
+                                updateUserAvatar(bottomSheet);
+                                currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                            } else {
+                                                Log.e(TAG, "No such document");
+                                            }
+                                        } else {
+                                            Log.e(TAG, "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
                                 usernameDisplay.setText(currentUser.getDisplayName());
 
                                 break;
@@ -180,43 +179,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
-    public void changeToRegister(){
-        Intent reg = new Intent(this, RegisterActivity.class);
-        startActivity(reg);
-    }
-
-    public void changeToLogin(){
-        Intent log = new Intent(this, LoginActivity.class);
-        startActivity(log);
-    }
-    /**
-     * randomly assign the avatar
-     *
-     * @return
-     */
-    private String assignAvatar(){
-        Random random = new Random();
-        int avatar = random.nextInt(5);
-
-        if(avatar == 0){
-            avatarString = AVATAR_ONE;
-        }
-        if(avatar == 1){
-            avatarString = AVATAR_TWO;
-        }
-        if(avatar == 2){
-            avatarString = AVATAR_THREE;
-        }
-        if(avatar == 3){
-            avatarString = AVATAR_FOUR;
-        }
-        if(avatar == 4){
-            avatarString = AVATAR_FIVE;
-        }
-        if(avatar == 5){
-            avatarString = AVATAR_SIX;
-        }
-        return avatarString;
+    public void loggout(){
+        Intent loggout = new Intent(this, LoginActivity.class);
+        startActivity(loggout);
     }
 
     /**
@@ -414,14 +379,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      *
      */
-    public void updateUserAvatar(){
-        String url = assignAvatar();
-        avatarURL = Uri.parse(url);
-
-        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(avatarURL).build();
-
-        currentUser.updateProfile(request);
+    public void updateUserAvatar(View bottomSheet){
+        Glide.with(bottomSheet)
+                .load(currentUser.getPhotoUrl())
+                .placeholder(R.drawable.avatar_default)
+                .into(avatar);
     }
 
     public void updateUsername(String username){
@@ -455,6 +417,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 });
+    }
 
+    /**
+     * This method is for logging out when called
+     */
+    private void LogOutUser() {
+        Intent startPageIntent =
+                new Intent(MapsActivity.this,LoginActivity.class);
+        //make sure people can not go back in again
+        startPageIntent.addFlags
+                (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(startPageIntent);
+        finish();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if(item.getItemId() == R.id.main_logout_button){
+            userAuthenticate.signOut();
+            LogOutUser();
+        }
+
+        return true;
     }
 }

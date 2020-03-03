@@ -7,14 +7,23 @@
     tools:context=".MapsActivity"
     android:orientation="vertical">
 
-    <!-- include main content -->
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- include bottom sheet -->
+        <include
+            layout="@layout/app_bar_layout"
+            android:id="@+id/maps_toolbar">
+        </include>
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
     <include
         layout="@layout/fragment_profile_card_view"
         android:id="@+id/mapBottomSheet"/>
