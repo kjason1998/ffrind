@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -136,32 +137,27 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void addUserToDB(){
 
+        CollectionReference users = db.collection("users");
+
         Map<String, Object> user = new HashMap<>();
         user.put(getResources().getString(R.string.dbEmail), email);
         user.put(getResources().getString(R.string.dbUserame), username);
         user.put(getResources().getString(R.string.dbPhoneNumber), phoneNumber);
 
         // Add a new document with a generated ID
-        db.collection(getResources().getString(R.string.dbUsers))
-                .document(userAuthenticate.getCurrentUser().getUid())
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterSuccess),
-                                Toast.LENGTH_LONG).show();
-                        changeToHomeScreen();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
-                                Toast.LENGTH_SHORT).show();
-                        Log.e(TAG,"Error adding document to Firestore :" + e);
-                    }
-                });
-
+        users.document(userAuthenticate.getCurrentUser().getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(RegisterActivity.this, "User added to firestore",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(RegisterActivity.this, "Action Failed -> " + e.toString(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }

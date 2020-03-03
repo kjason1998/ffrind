@@ -85,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        changeToRegister();
+        changeToLogin();
         getLocationPermission();
         mapFragment.getMapAsync(this);
         userAuthenticate = FirebaseAuth.getInstance();
@@ -183,6 +183,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void changeToRegister(){
         Intent reg = new Intent(this, RegisterActivity.class);
         startActivity(reg);
+    }
+
+    public void changeToLogin(){
+        Intent log = new Intent(this, LoginActivity.class);
+        startActivity(log);
     }
     /**
      * randomly assign the avatar
@@ -426,7 +431,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void updateUserBio(String bio){
-        userBioDisplay.setText(bio);
+        //userBioDisplay.setText(bio);
     }
 
     public void getUserBio(){
