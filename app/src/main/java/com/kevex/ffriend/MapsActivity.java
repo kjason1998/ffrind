@@ -63,6 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     private boolean mLocationPermissionGranted;
+    private boolean showingBottomSheetCurrentUser = true;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
 
     private Toolbar mToolbar;
@@ -70,9 +71,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView usernameDisplay;
     private TextView userBioDisplay;
 
+    private BottomSheetBehavior bottomSheetBehavior;
+    private User otherUserToBeShown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showingBottomSheetCurrentUser = true;
+        otherUserToBeShown = null;
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         setContentView(R.layout.activity_maps);
@@ -119,7 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         // init the bottom sheet behavior
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         // set the peek height
         bottomSheetBehavior.setPeekHeight(120);
@@ -143,32 +149,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
-                                updateUserAvatar(bottomSheet);
-                                currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (document.exists()) {
-                                                usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
-                                                userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                if(showingBottomSheetCurrentUser){
+                                    updateUserAvatar(bottomSheet);
+                                    currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                } else {
+                                                    Log.e(TAG, "No such document");
+                                                }
                                             } else {
-                                                Log.e(TAG, "No such document");
+                                                Log.e(TAG, "get failed with ", task.getException());
                                             }
-                                        } else {
-                                            Log.e(TAG, "get failed with ", task.getException());
                                         }
-                                    }
-                                });
-                                usernameDisplay.setText(currentUser.getDisplayName());
-
+                                    });
+                                    usernameDisplay.setText(currentUser.getDisplayName());
+                                }else{
+                                    updateUserAvatar(bottomSheet);
+                                    currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    usernameDisplay.setText(otherUserToBeShown.getUsername());
+                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                } else {
+                                                    Log.e(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.e(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+                                    usernameDisplay.setText(currentUser.getDisplayName());
+                                }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
+                                otherUserToBeShown = null;
+                                showingBottomSheetCurrentUser = true;
                                 break;
                             case BottomSheetBehavior.STATE_DRAGGING:
                                 break;
                             case BottomSheetBehavior.STATE_SETTLING:
-
                                 break;
                         }
                         Log.d(TAG, "onStateChanged: " + newState);
@@ -198,7 +225,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .fillColor(Color.BLUE)
                 .clickable(true));
 
-        circle.setTag(new User("email@gmail.com","Strong password", "Username", "123423425324"));
+        circle.setTag(new User("email@gmail.com","Strong password", "Other user username", "123423425324"));
 
         mMap.setOnCircleClickListener(onClickCircleListener());
         mMap.setMyLocationEnabled(true);
@@ -253,8 +280,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(getApplicationContext(), "OBJECT: " + circle.getTag(), Toast.LENGTH_SHORT).show();
                 animateCircle(circle);
+                openBottomSheetOtherUser(circle.getTag());
             }
         };
+    }
+
+    private void openBottomSheetOtherUser(Object user) {
+        showingBottomSheetCurrentUser = false;
+        otherUserToBeShown = (User) user;
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     /**
