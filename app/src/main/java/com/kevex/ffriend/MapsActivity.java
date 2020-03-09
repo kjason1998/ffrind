@@ -198,6 +198,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .fillColor(Color.BLUE)
                 .clickable(true));
 
+        circle.setTag(new User("email@gmail.com","Strong password", "Username", "123423425324"));
+
         mMap.setOnCircleClickListener(onClickCircleListener());
         mMap.setMyLocationEnabled(true);
     }
@@ -248,7 +250,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "OBJECT: " + circle.getTag(), Toast.LENGTH_SHORT).show();
                 animateCircle(circle);
             }
         };
@@ -366,7 +369,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         vAnimator.start();
-        Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
     }
 
     /**

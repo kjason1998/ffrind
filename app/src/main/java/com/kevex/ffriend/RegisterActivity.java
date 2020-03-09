@@ -61,8 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = userAuthenticate.getCurrentUser();
-        if(currentUser != null) {
-            System.out.println(currentUser.toString());
+        if(currentUser != null){
+            changeToHomeScreen();
         }
     }
 
@@ -121,6 +121,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void changeToHomeScreen() {
+        Intent homeIntent = new Intent(this, MapsActivity.class);
+        startActivity(homeIntent);
+    }
+
     /**
      *
      * android:onClick cancel button
@@ -153,6 +158,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 setUserAvatar(currentUser);
+                changeToHomeScreen();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
