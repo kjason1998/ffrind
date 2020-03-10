@@ -20,13 +20,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,7 +54,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Locale;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+        LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = "MapsActivity";
 
@@ -75,6 +82,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private BottomSheetBehavior bottomSheetBehavior;
     private User otherUserToBeShown;
+    GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+    private Location lastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +117,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
      * author: kevin jason
      * initiate the card view profile and give animation dragging out and in
      *
@@ -152,7 +161,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
-                                if(showingBottomSheetCurrentUser){
+                                if (showingBottomSheetCurrentUser) {
                                     updateUserAvatar();
                                     currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
@@ -171,7 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
                                     });
                                     usernameDisplay.setText(currentUser.getDisplayName());
-                                }else{
+                                } else {
                                     fabStartChat.show();
                                     updateUserAvatar();
                                     usernameDisplay.setText(otherUserToBeShown.getUsername());
@@ -196,7 +205,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     /**
      * Manipulates the map, once available.
      * This callback is triggered when the map is ready to be used.
@@ -218,9 +226,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .fillColor(Color.BLUE)
                 .clickable(true));
 
-        circle.setTag(new User("email@gmail.com","Strong password", "Other user username", "123423425324"));
+        circle.setTag(new User("email@gmail.com", "Strong password", "Other user username", "123423425324"));
 
         mMap.setOnCircleClickListener(onClickCircleListener());
+
+        buildGoogleApiClient();
 //        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 //
 //            private float currentZoom = -1;
@@ -234,6 +244,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //            }
 //        });
         mMap.setMyLocationEnabled(true);
+    }
+
+    /**
+     * google client for location
+     *
+     *
+     * */
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
+
     }
 
     /**
@@ -268,10 +293,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "location change", Toast.LENGTH_SHORT).show();
-//        mCurrentLocation = location;
-//        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-//        moveUser(Location location);
+        lastLocation = location;
+        System.out.println("DriverMapsActivity.onLocationChanged "+location.getLatitude() + " " + location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
     }
 
 
@@ -390,9 +417,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
      * author: Kevin Jason
-     *
+     * <p>
      * animation clicked for circle
      *
      * @param circle
@@ -417,12 +443,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
      * set the user profile picture that have been randomly
      * assigned when user registered.
-     *
      */
-    public void updateUserAvatar(){
+    public void updateUserAvatar() {
         Glide.with(avatar)
                 .load(currentUser.getPhotoUrl())
                 .placeholder(R.drawable.avatar_default)
@@ -434,7 +458,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void LogOutUser() {
         Intent startPageIntent =
-                new Intent(MapsActivity.this,LoginActivity.class);
+                new Intent(MapsActivity.this, LoginActivity.class);
         //make sure people can not go back in again
         startPageIntent.addFlags
                 (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -456,11 +480,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(item.getItemId() == R.id.main_logout_button){
+        if (item.getItemId() == R.id.main_logout_button) {
             userAuthenticate.signOut();
             LogOutUser();
         }
 
         return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, "Not Enough Permission", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
