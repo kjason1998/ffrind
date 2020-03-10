@@ -323,7 +323,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .set(data, SetOptions.merge());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
 
     }
 
