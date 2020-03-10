@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
     private final static String TAG = "RegisterActivity";
-    private Uri avatarURL;
+
     private String email;
     private String password;
     private String confirmPassword;
@@ -171,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void setUserAvatar(FirebaseUser currentUser){
         String url = randomAvatarUrl();
-        avatarURL = Uri.parse(url);
+        Uri avatarURL; avatarURL = Uri.parse(url);
 
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(avatarURL).build();
