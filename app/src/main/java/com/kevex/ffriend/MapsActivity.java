@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -70,6 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView avatar;
     private TextView usernameDisplay;
     private TextView userBioDisplay;
+    private FloatingActionButton fabStartChat;
 
     private BottomSheetBehavior bottomSheetBehavior;
     private User otherUserToBeShown;
@@ -121,6 +123,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 avatar = findViewById(R.id.avatarImageView);
                 usernameDisplay = findViewById(R.id.profileUserNameInfo);
                 userBioDisplay = findViewById(R.id.profileBioInfo);
+                fabStartChat = findViewById(R.id.fabStartChat);
             }
         });
 
@@ -150,7 +153,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
                                 if(showingBottomSheetCurrentUser){
-                                    updateUserAvatar(bottomSheet);
+                                    updateUserAvatar();
                                     currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -169,29 +172,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     });
                                     usernameDisplay.setText(currentUser.getDisplayName());
                                 }else{
-                                    updateUserAvatar(bottomSheet);
-                                    currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document = task.getResult();
-                                                if (document.exists()) {
-                                                    usernameDisplay.setText(otherUserToBeShown.getUsername());
-                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
-                                                } else {
-                                                    Log.e(TAG, "No such document");
-                                                }
-                                            } else {
-                                                Log.e(TAG, "get failed with ", task.getException());
-                                            }
-                                        }
-                                    });
-                                    usernameDisplay.setText(currentUser.getDisplayName());
+                                    fabStartChat.show();
+                                    updateUserAvatar();
+                                    usernameDisplay.setText(otherUserToBeShown.getUsername());
+                                    userBioDisplay.setText(otherUserToBeShown.getUsername());
+                                    usernameDisplay.setText(otherUserToBeShown.getEmail());
                                 }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
                                 otherUserToBeShown = null;
                                 showingBottomSheetCurrentUser = true;
+                                fabStartChat.hide();
                                 break;
                             case BottomSheetBehavior.STATE_DRAGGING:
                                 break;
@@ -203,6 +194,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 });
     }
+
+
 
     /**
      * Manipulates the map, once available.
@@ -228,7 +221,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         circle.setTag(new User("email@gmail.com","Strong password", "Other user username", "123423425324"));
 
         mMap.setOnCircleClickListener(onClickCircleListener());
-        mMap.setMyLocationEnabled(true);
+//        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+//
+//            private float currentZoom = -1;
+//
+//            @Override
+//            public void onCameraChange(CameraPosition pos) {
+//                if (pos.zoom != currentZoom){
+//                    currentZoom = pos.zoom;
+//                    // do you action here
+//                }
+//            }
+//        });
+//        mMap.setMyLocationEnabled(true);
     }
 
     /**
@@ -288,6 +293,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void openBottomSheetOtherUser(Object user) {
         showingBottomSheetCurrentUser = false;
         otherUserToBeShown = (User) user;
+        fabStartChat.show();
+        updateUserAvatar();
+        usernameDisplay.setText(otherUserToBeShown.getUsername());
+        userBioDisplay.setText(otherUserToBeShown.getUsername());
+        usernameDisplay.setText(otherUserToBeShown.getEmail());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
@@ -412,8 +422,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * assigned when user registered.
      *
      */
-    public void updateUserAvatar(View bottomSheet){
-        Glide.with(bottomSheet)
+    public void updateUserAvatar(){
+        Glide.with(avatar)
                 .load(currentUser.getPhotoUrl())
                 .placeholder(R.drawable.avatar_default)
                 .into(avatar);
