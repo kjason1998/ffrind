@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -81,23 +82,35 @@ public class LoginActivity extends AppCompatActivity {
         email = emailInput.getText().toString();
         password = passwordInput.getText().toString();
 
-        //replacement for loading coz we dont know if we clicked it or not
-        Toast.makeText(this,"LOGIN BUTTON CLICKED", Toast.LENGTH_SHORT).show();
 
-        userAuthenticate.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            changeToHomeScreen();
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.loginMessageLoginSuccess),
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.loginMessageLoginFailed),
-                                    Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(email)) {
+            emailInput.setError("please input email");
+
+        } else if (TextUtils.isEmpty(password)) {
+            passwordInput.setError("please input password");
+        } else {
+
+            userAuthenticate.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            try {
+                                task.getResult();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(LoginActivity.this, e.getMessage().split(": ")[1], Toast.LENGTH_SHORT).show();
+                            }
+                            if (task.isSuccessful()) {
+                                changeToHomeScreen();
+                                Toast.makeText(LoginActivity.this, getResources().getString(R.string.loginMessageLoginSuccess),
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, getResources().getString(R.string.loginMessageLoginFailed),
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
 }
