@@ -171,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void setUserAvatar(FirebaseUser currentUser){
         String url = randomAvatarUrl();
-        Uri avatarURL; avatarURL = Uri.parse(url);
+        Uri avatarURL = Uri.parse(url);
 
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(avatarURL).build();
