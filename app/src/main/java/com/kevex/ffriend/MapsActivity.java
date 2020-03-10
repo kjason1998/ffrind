@@ -271,8 +271,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             ArrayList<User> otherUsers = new ArrayList<>();
-                            User userToBeAdded = new User();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                User userToBeAdded = new User();
                                 userToBeAdded.setEmail(document.getString(getResources().getString(R.string.dbEmail)));
                                 userToBeAdded.setUsername(document.getString(getResources().getString(R.string.dbUserame)));
                                 userToBeAdded.setLon(document.getDouble(getResources().getString(R.string.dbLon)));
@@ -323,7 +324,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .set(data, SetOptions.merge());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
+        fetchOtherUsers();
 
     }
 
