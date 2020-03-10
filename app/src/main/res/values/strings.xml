@@ -16,7 +16,7 @@
     <string name="dbUsers">users</string>
     <string name="dbUserame">username</string>
     <string name="dbEmail">email</string>
-    <string name="dbPhoneNumber">phone number</string>
+    <string name="dbPhoneNumber">phonenumber</string>
 
     <!-- login -->
     <!-- login xml -->
@@ -42,5 +42,7 @@
     <string name="profileGenderFemale"> Female</string>
     <string name="profileDefaultAge">Years old/</string>
     <string name="profileDefaultDescription">        In a library, the word biography refers both to a kind of book and to a section where books of that kind are found. Each biography tells the story of a real person\'s life. A biography may be about someone who lived long ago, recently, or even someone who is still living, though in the last case it must necessarily be incomplete. The term autobiograp</string>
+    <string name="dbLon">lon</string>
+    <string name="dbLat">lat</string>
     <!-- profile activity -->
 </resources>

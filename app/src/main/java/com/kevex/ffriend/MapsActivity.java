@@ -50,8 +50,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -217,18 +224,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // check permission
         mMap = googleMap;
         setGoogleMapStyles(googleMap);
-        // Add a marker circle marker around swansea
-        Circle circle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(51.62, -3.94))
-                .radius(10)
-                .strokeWidth(10)
-                .strokeColor(Color.WHITE)
-                .fillColor(Color.BLUE)
-                .clickable(true));
 
-        circle.setTag(new User("email@gmail.com", "Strong password", "Other user username", "123423425324"));
-
-        mMap.setOnCircleClickListener(onClickCircleListener());
+        fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
 
         buildGoogleApiClient();
 //        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
@@ -246,9 +243,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMyLocationEnabled(true);
     }
 
+    private void populateMapWithCircles(ArrayList<User> otherUsers) {
+
+        Log.d(TAG + "Array Test", otherUsers.toString());
+
+        // Add a marker circle marker around swansea
+
+        for(User user : otherUsers) {
+            Circle circle = mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(user.getLat(), user.getLon()))
+                    .radius(10)
+                    .strokeWidth(10)
+                    .strokeColor(Color.WHITE)
+                    .fillColor(Color.BLUE)
+                    .clickable(true));
+
+            circle.setTag(user);
+        }
+        mMap.setOnCircleClickListener(onClickCircleListener());
+    }
+
+    private void fetchOtherUsers() {
+        db.collection(getResources().getString(R.string.dbUsers))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<User> otherUsers = new ArrayList<>();
+                            User userToBeAdded = new User();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                userToBeAdded.setEmail(document.getString(getResources().getString(R.string.dbEmail)));
+                                userToBeAdded.setUsername(document.getString(getResources().getString(R.string.dbUserame)));
+                                userToBeAdded.setLon(document.getDouble(getResources().getString(R.string.dbLon)));
+                                userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
+                                userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
+                                otherUsers.add(userToBeAdded);
+                            }
+                            populateMapWithCircles(otherUsers); // this will also populate the circle in the map
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
     /**
-     * google client for location
+     * @author:jack
      *
+     *
+     * google client for location
      *
      * */
     protected synchronized void buildGoogleApiClient() {
@@ -258,6 +302,55 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
+
+    }
+
+    /**
+     * @author:jack
+     *
+     * show the position of yourself
+     *
+     * */
+    @Override
+    public void onLocationChanged(Location location) {
+        lastLocation = location;
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("lat", location.getLatitude());
+        data.put("lon", location.getLongitude());
+
+        currentUserRef
+                .set(data, SetOptions.merge());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+    }
+
+    /**
+     * @author:jack
+     *
+     * set up interval eg.1000 means 1s
+     * check permission
+     *
+     * */
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+        // check if permission for location Fine and Coarse
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this, "Not Enough Permission", Toast.LENGTH_SHORT).show();
+            getLocationPermission();
+            return;
+        }else{ // if location permission for location Fine and Coarse is enabled go to this branch
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        }
 
     }
 
@@ -291,21 +384,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * jack
-     *
-     * show the position of yourself
-     *
-     * */
-    @Override
-    public void onLocationChanged(Location location) {
-        lastLocation = location;
-        System.out.println("DriverMapsActivity.onLocationChanged "+location.getLatitude() + " " + location.getLongitude());
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-
-    }
 
 
     /**
@@ -322,7 +400,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
     }
-
     private void openBottomSheetOtherUser(Object user) {
         showingBottomSheetCurrentUser = false;
         otherUserToBeShown = (User) user;
@@ -492,29 +569,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         return true;
-    }
-    /**
-    * jack
-    *
-    * set up interval eg.1000 means 1s
-    * check permission
-    *
-    * */
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
-        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            Toast.makeText(this, "Not Enough Permission", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-
     }
 
     @Override
