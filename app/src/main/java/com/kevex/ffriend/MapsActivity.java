@@ -291,6 +291,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * jack
+     *
+     * show the position of yourself
+     *
+     * */
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
@@ -487,7 +493,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return true;
     }
-
+    /**
+    * jack
+    *
+    * set up interval eg.1000 means 1s
+    * check permission
+    *
+    * */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
