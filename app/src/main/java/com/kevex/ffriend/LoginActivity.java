@@ -81,6 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         email = emailInput.getText().toString();
         password = passwordInput.getText().toString();
 
+        //replacement for loading coz we dont know if we clicked it or not
+        Toast.makeText(this,"LOGIN BUTTON CLICKED", Toast.LENGTH_SHORT).show();
+
         userAuthenticate.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

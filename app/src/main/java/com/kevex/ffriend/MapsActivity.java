@@ -8,9 +8,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
@@ -38,16 +40,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Locale;
-import java.util.Random;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -57,50 +57,65 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int locationRequestCode = 1000;
     private FirebaseAuth userAuthenticate;
     private FirebaseFirestore db;
+    private DocumentReference currentUserRef;
     private FirebaseUser currentUser;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
 
     private boolean mLocationPermissionGranted;
-    private String avatarString;
+    private boolean showingBottomSheetCurrentUser = true;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
-    private static ImageView avatar;
+
+    private Toolbar mToolbar;
+    private ImageView avatar;
     private TextView usernameDisplay;
     private TextView userBioDisplay;
-    Uri avatarURL;
-    private final String AVATAR_ONE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2";
-    private final String AVATAR_TWO = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829";
-    private final String AVATAR_THREE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%203.jpg?alt=media&token=c250e79f-e6c0-488b-8263-cf057e63bd98";
-    private final String AVATAR_FOUR = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%204.jpg?alt=media&token=63ee938d-8e1a-4c00-9661-27d4d1f86366";
-    private final String AVATAR_FIVE = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%205.jpg?alt=media&token=c28bcdab-27e4-48ef-b4d7-bb123848edf4";
-    private final String AVATAR_SIX = "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%206.jpg?alt=media&token=7b1e7f7c-7e39-4c0d-979c-081fa0b534df";
-    private String username;
+    private FloatingActionButton fabStartChat;
+
+    private BottomSheetBehavior bottomSheetBehavior;
+    private User otherUserToBeShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);// Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        showingBottomSheetCurrentUser = true;
+        otherUserToBeShown = null;
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //changeToLogin();
         getLocationPermission();
         mapFragment.getMapAsync(this);
+
+        // Firebase initialize
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            username = bundle.getString("username");
-            updateUsername(username);
-        }
+        currentUserRef = db.collection(this.getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
-        if (currentUser.getPhotoUrl() == null) {
-            updateUserAvatar();
-        }
+        //setup tool bar
+        mToolbar = findViewById(R.id.maps_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Maps");
 
+        //initialize bottom sheet
+        bottomSheetInitializer(llBottomSheet);
+    }
+
+    /**
+     *
+     * author: kevin jason
+     * initiate the card view profile and give animation dragging out and in
+     *
+     * @param llBottomSheet
+     */
+    private void bottomSheetInitializer(LinearLayout llBottomSheet) {
+
+        // initialize the information components inside this fragment
         llBottomSheet.post(new Runnable() {
 
             @Override
@@ -108,35 +123,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 avatar = findViewById(R.id.avatarImageView);
                 usernameDisplay = findViewById(R.id.profileUserNameInfo);
                 userBioDisplay = findViewById(R.id.profileBioInfo);
-
+                fabStartChat = findViewById(R.id.fabStartChat);
             }
         });
-        bottomSheetInitializer(llBottomSheet);
-        getUserBio();
-    }
 
-    /**
-     * author: kevin jason
-     * initiate the card view profile and give animation dragging out and in
-     *
-     * @param llBottomSheet
-     */
-    private void bottomSheetInitializer(LinearLayout llBottomSheet) {
         // init the bottom sheet behavior
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
-
-        // change the state of the bottom sheet
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         // set the peek height
         bottomSheetBehavior.setPeekHeight(120);
 
-
-        // set hideable or not
+        // set hide able or not
         bottomSheetBehavior.setHideable(false);
-
 
         // set callback for changes
         bottomSheetBehavior.setBottomSheetCallback(
@@ -154,19 +152,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 break;
                             case BottomSheetBehavior.STATE_EXPANDED:
-                                Glide.with(bottomSheet)
-                                        .load(currentUser.getPhotoUrl())
-                                        .placeholder(R.drawable.avatar_default)
-                                        .into(avatar);
-                                usernameDisplay.setText(currentUser.getDisplayName());
-
+                                if(showingBottomSheetCurrentUser){
+                                    updateUserAvatar();
+                                    currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                } else {
+                                                    Log.e(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.e(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+                                    usernameDisplay.setText(currentUser.getDisplayName());
+                                }else{
+                                    fabStartChat.show();
+                                    updateUserAvatar();
+                                    usernameDisplay.setText(otherUserToBeShown.getUsername());
+                                    userBioDisplay.setText(otherUserToBeShown.getUsername());
+                                    usernameDisplay.setText(otherUserToBeShown.getEmail());
+                                }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
+                                otherUserToBeShown = null;
+                                showingBottomSheetCurrentUser = true;
+                                fabStartChat.hide();
                                 break;
                             case BottomSheetBehavior.STATE_DRAGGING:
                                 break;
                             case BottomSheetBehavior.STATE_SETTLING:
-
                                 break;
                         }
                         Log.d(TAG, "onStateChanged: " + newState);
@@ -175,45 +195,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
-    public void changeToRegister() {
-        Intent reg = new Intent(this, RegisterActivity.class);
-        startActivity(reg);
-    }
 
-    public void changeToLogin() {
-        Intent log = new Intent(this, LoginActivity.class);
-        startActivity(log);
-    }
-
-    /**
-     * randomly assign the avatar
-     *
-     * @return
-     */
-    private String assignAvatar() {
-        Random random = new Random();
-        int avatar = random.nextInt(5);
-
-        if (avatar == 0) {
-            avatarString = AVATAR_ONE;
-        }
-        if (avatar == 1) {
-            avatarString = AVATAR_TWO;
-        }
-        if (avatar == 2) {
-            avatarString = AVATAR_THREE;
-        }
-        if (avatar == 3) {
-            avatarString = AVATAR_FOUR;
-        }
-        if (avatar == 4) {
-            avatarString = AVATAR_FIVE;
-        }
-        if (avatar == 5) {
-            avatarString = AVATAR_SIX;
-        }
-        return avatarString;
-    }
 
     /**
      * Manipulates the map, once available.
@@ -236,8 +218,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .fillColor(Color.BLUE)
                 .clickable(true));
 
+        circle.setTag(new User("email@gmail.com","Strong password", "Other user username", "123423425324"));
+
         mMap.setOnCircleClickListener(onClickCircleListener());
-        mMap.setMyLocationEnabled(true);
+//        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+//
+//            private float currentZoom = -1;
+//
+//            @Override
+//            public void onCameraChange(CameraPosition pos) {
+//                if (pos.zoom != currentZoom){
+//                    currentZoom = pos.zoom;
+//                    // do you action here
+//                }
+//            }
+//        });
+//        mMap.setMyLocationEnabled(true);
     }
 
     /**
@@ -286,10 +282,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "OBJECT: " + circle.getTag(), Toast.LENGTH_SHORT).show();
                 animateCircle(circle);
+                openBottomSheetOtherUser(circle.getTag());
             }
         };
+    }
+
+    private void openBottomSheetOtherUser(Object user) {
+        showingBottomSheetCurrentUser = false;
+        otherUserToBeShown = (User) user;
+        fabStartChat.show();
+        updateUserAvatar();
+        usernameDisplay.setText(otherUserToBeShown.getUsername());
+        userBioDisplay.setText(otherUserToBeShown.getUsername());
+        usernameDisplay.setText(otherUserToBeShown.getEmail());
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     /**
@@ -381,8 +390,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     *
      * author: Kevin Jason
-     * <p>
+     *
      * animation clicked for circle
      *
      * @param circle
@@ -403,53 +413,54 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         vAnimator.start();
-        Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
     }
 
     /**
      *
+     * set the user profile picture that have been randomly
+     * assigned when user registered.
+     *
      */
-    public void updateUserAvatar() {
-        String url = assignAvatar();
-        avatarURL = Uri.parse(url);
-
-        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(avatarURL).build();
-
-        currentUser.updateProfile(request);
+    public void updateUserAvatar(){
+        Glide.with(avatar)
+                .load(currentUser.getPhotoUrl())
+                .placeholder(R.drawable.avatar_default)
+                .into(avatar);
     }
 
-    public void updateUsername(String username) {
-        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username).build();
-        userAuthenticate.getCurrentUser().updateProfile(request);
+    /**
+     * This method is for logging out when called from menu
+     */
+    private void LogOutUser() {
+        Intent startPageIntent =
+                new Intent(MapsActivity.this,LoginActivity.class);
+        //make sure people can not go back in again
+        startPageIntent.addFlags
+                (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(startPageIntent);
+        finish();
     }
 
-    public void updateUserBio(String bio) {
-        //userBioDisplay.setText(bio);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
     }
 
-    public void getUserBio() {
-        db.collection("users")
-                .document(currentUser.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                if (document.getString("bio") != null) {
-                                    String userBio = document.getString("bio");
-                                    Toast.makeText(getApplicationContext(), userBio, Toast.LENGTH_LONG).show();
-                                    updateUserBio(userBio);
-                                } else {
-                                    updateUserBio("N/A");
-                                }
-                            }
-                        }
-                    }
-                });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
 
+        if(item.getItemId() == R.id.main_logout_button){
+            userAuthenticate.signOut();
+            LogOutUser();
+        }
+
+        return true;
     }
 }
