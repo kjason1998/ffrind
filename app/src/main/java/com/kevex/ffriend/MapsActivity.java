@@ -233,7 +233,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                }
 //            }
 //        });
-//        mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(true);
     }
 
     /**
