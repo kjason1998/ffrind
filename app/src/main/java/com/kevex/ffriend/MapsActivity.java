@@ -85,23 +85,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         LinearLayout llBottomSheet = findViewById(R.id.mapBottomSheet);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        changeToLogin();
+        //changeToLogin();
         getLocationPermission();
         mapFragment.getMapAsync(this);
         userAuthenticate = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = userAuthenticate.getCurrentUser();
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             username = bundle.getString("username");
             updateUsername(username);
         }
 
-        Toast.makeText(MapsActivity.this.getApplicationContext(), "USERNAME=>" + currentUser.getDisplayName(),
-                Toast.LENGTH_SHORT).show();
-
-        if(currentUser.getPhotoUrl() == null){
-              updateUserAvatar();
+        if (currentUser.getPhotoUrl() == null) {
+            updateUserAvatar();
         }
 
         llBottomSheet.post(new Runnable() {
@@ -119,7 +116,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
      * author: kevin jason
      * initiate the card view profile and give animation dragging out and in
      *
@@ -140,7 +136,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // set hideable or not
         bottomSheetBehavior.setHideable(false);
-
 
 
         // set callback for changes
@@ -180,40 +175,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
-    public void changeToRegister(){
+    public void changeToRegister() {
         Intent reg = new Intent(this, RegisterActivity.class);
         startActivity(reg);
     }
 
-    public void changeToLogin(){
+    public void changeToLogin() {
         Intent log = new Intent(this, LoginActivity.class);
         startActivity(log);
     }
+
     /**
      * randomly assign the avatar
      *
      * @return
      */
-    private String assignAvatar(){
+    private String assignAvatar() {
         Random random = new Random();
         int avatar = random.nextInt(5);
 
-        if(avatar == 0){
+        if (avatar == 0) {
             avatarString = AVATAR_ONE;
         }
-        if(avatar == 1){
+        if (avatar == 1) {
             avatarString = AVATAR_TWO;
         }
-        if(avatar == 2){
+        if (avatar == 2) {
             avatarString = AVATAR_THREE;
         }
-        if(avatar == 3){
+        if (avatar == 3) {
             avatarString = AVATAR_FOUR;
         }
-        if(avatar == 4){
+        if (avatar == 4) {
             avatarString = AVATAR_FIVE;
         }
-        if(avatar == 5){
+        if (avatar == 5) {
             avatarString = AVATAR_SIX;
         }
         return avatarString;
@@ -385,9 +381,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
      * author: Kevin Jason
-     *
+     * <p>
      * animation clicked for circle
      *
      * @param circle
@@ -414,7 +409,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      *
      */
-    public void updateUserAvatar(){
+    public void updateUserAvatar() {
         String url = assignAvatar();
         avatarURL = Uri.parse(url);
 
@@ -424,31 +419,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentUser.updateProfile(request);
     }
 
-    public void updateUsername(String username){
+    public void updateUsername(String username) {
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(username).build();
         userAuthenticate.getCurrentUser().updateProfile(request);
     }
 
-    public void updateUserBio(String bio){
+    public void updateUserBio(String bio) {
         //userBioDisplay.setText(bio);
     }
 
-    public void getUserBio(){
+    public void getUserBio() {
         db.collection("users")
                 .document(currentUser.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if(document.exists()){
-                                if(document.getString("bio") != null){
+                            if (document.exists()) {
+                                if (document.getString("bio") != null) {
                                     String userBio = document.getString("bio");
                                     Toast.makeText(getApplicationContext(), userBio, Toast.LENGTH_LONG).show();
                                     updateUserBio(userBio);
-                                }else{
+                                } else {
                                     updateUserBio("N/A");
                                 }
                             }
