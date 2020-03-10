@@ -3,6 +3,7 @@ package com.kevex.ffriend;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
     private FirebaseAuth userAuthenticate;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,12 @@ public class LoginActivity extends AppCompatActivity {
 
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("login");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+
     }
 
     @Override
@@ -90,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordInput.setError("please input password");
         } else {
 
+            progressDialog.show();
             userAuthenticate.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -108,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, getResources().getString(R.string.loginMessageLoginFailed),
                                         Toast.LENGTH_LONG).show();
                             }
+                            progressDialog.dismiss();
                         }
                     });
         }
