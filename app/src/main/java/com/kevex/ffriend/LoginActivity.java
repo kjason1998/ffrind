@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = userAuthenticate.getCurrentUser();
 
         if(currentUser != null){
-            //changeToHomeScreen();
+            changeToHomeScreen();
         }
     }
 
@@ -122,5 +122,4 @@ public class LoginActivity extends AppCompatActivity {
                     });
         }
     }
-
 }

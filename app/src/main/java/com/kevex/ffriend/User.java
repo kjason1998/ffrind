@@ -3,26 +3,58 @@ package com.kevex.ffriend;
 public class User {
 
     String email;
-    String password;
     String username;
     String userID;
-    String phoneNumber;
+    String phonenumber;
+    String bio;
+    double lat;
+    double lon;
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
     public User() {
 
     }
 
-    public User(String email, String password, String username, String phoneNumber) {
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public User(String email, String username, String phoneNumber) {
         setEmail(email);
-        setPassword(password);
         setUsername(username);
         setPhoneNumber(phoneNumber);
     }
 
-    public User(String userID, String email, String password, String username, String phoneNumber) {
+    public User(String userID, String email, String username, String phoneNumber) {
         setUserID(userID);
         setEmail(email);
-        setPassword(password);
         setUsername(username);
         setPhoneNumber(phoneNumber);
     }
@@ -33,14 +65,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getUsername() {
@@ -60,21 +84,23 @@ public class User {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phonenumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phonenumber = phoneNumber;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "email='" + this.getEmail() + '\'' +
-                ", password='" + this.getPassword() + '\'' +
-                ", username='" + this.getUsername() + '\'' +
-                ", userID=" + this.getUserID() + '\'' +
-                ", phoneNumber='" + this.getPhoneNumber() + '\'' +
+                "email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", userID='" + userID + '\'' +
+                ", phonenumber='" + phonenumber + '\'' +
+                ", bio='" + bio + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
                 '}';
     }
 }

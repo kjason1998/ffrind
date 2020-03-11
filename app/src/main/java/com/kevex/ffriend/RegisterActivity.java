@@ -141,6 +141,8 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(getResources().getString(R.string.dbEmail), email);
         user.put(getResources().getString(R.string.dbUserame), username);
         user.put(getResources().getString(R.string.dbPhoneNumber), phoneNumber);
+        user.put(getResources().getString(R.string.dbLat), 51.6);
+        user.put(getResources().getString(R.string.dbLon), -3.9);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
