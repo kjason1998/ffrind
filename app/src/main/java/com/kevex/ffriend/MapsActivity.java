@@ -250,7 +250,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(lastLocation != null){
             fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
-
         }
 
         buildGoogleApiClient();
