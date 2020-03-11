@@ -89,9 +89,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private BottomSheetBehavior bottomSheetBehavior;
     private User otherUserToBeShown;
-    GoogleApiClient googleApiClient;
+    private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private Location lastLocation;
+    private Circle circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentUser = userAuthenticate.getCurrentUser();
         currentUserRef = db.collection(this.getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
+        updateInitialLocation();
+
         //setup tool bar
         mToolbar = findViewById(R.id.maps_toolbar);
         setSupportActionBar(mToolbar);
@@ -121,6 +124,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //initialize bottom sheet
         bottomSheetInitializer(llBottomSheet);
+    }
+
+    private void updateInitialLocation() {
+        currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        lastLocation.setLatitude((double)document.get(getString(R.string.dbLat)));
+                        lastLocation.setLatitude((double)document.get(getString(R.string.dbLat)));
+                    } else {
+                        Log.e(TAG, "No such document");
+                    }
+                } else {
+                    Log.e(TAG, "getting initial lon lat failed : ", task.getException());
+                }
+            }
+        });
     }
 
     /**
@@ -190,6 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 } else {
                                     fabStartChat.show();
                                     updateUserAvatar();
+                                    //updateOtherUserAvatar(userAuthenticate.);
                                     usernameDisplay.setText(otherUserToBeShown.getUsername());
                                     userBioDisplay.setText(otherUserToBeShown.getUsername());
                                     usernameDisplay.setText(otherUserToBeShown.getEmail());
@@ -225,21 +248,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         setGoogleMapStyles(googleMap);
 
-        fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
+        if(lastLocation != null){
+            fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
+
+        }
 
         buildGoogleApiClient();
-//        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-//
-//            private float currentZoom = -1;
-//
-//            @Override
-//            public void onCameraChange(CameraPosition pos) {
-//                if (pos.zoom != currentZoom){
-//                    currentZoom = pos.zoom;
-//                    // do you action here
-//                }
-//            }
-//        });
+
         mMap.setMyLocationEnabled(true);
     }
 
@@ -247,10 +262,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.d(TAG + "Array Test", otherUsers.toString());
 
-        // Add a marker circle marker around swansea
+        // remove the previous circles
+        mMap.clear();
 
+        // add updated location circles
         for(User user : otherUsers) {
-            Circle circle = mMap.addCircle(new CircleOptions()
+            circle = mMap.addCircle(new CircleOptions()
                     .center(new LatLng(user.getLat(), user.getLon()))
                     .radius(10)
                     .strokeWidth(10)
@@ -263,23 +280,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCircleClickListener(onClickCircleListener());
     }
 
+    /**
+     * @author:kevin
+     *
+     * this is use to populate other user in the map
+     *
+     * get user from firebase
+     * filter with longtitude
+     * filter current user as well
+     */
     private void fetchOtherUsers() {
         db.collection(getResources().getString(R.string.dbUsers))
+                .whereGreaterThan(getResources().getString(R.string.dbLon),lastLocation.getLongitude()-1)
+                //.whereGreaterThan(getResources().getString(R.string.dbLat),lastLocation.getLatitude()-1)
+                .whereLessThan(getResources().getString(R.string.dbLon),lastLocation.getLongitude()+1)
+                //.whereLessThan(getResources().getString(R.string.dbLat),lastLocation.getLatitude()+1)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             ArrayList<User> otherUsers = new ArrayList<>();
-
+                            Log.d(TAG,"CURRENT USER ID:" + currentUserRef.getId());
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                User userToBeAdded = new User();
-                                userToBeAdded.setEmail(document.getString(getResources().getString(R.string.dbEmail)));
-                                userToBeAdded.setUsername(document.getString(getResources().getString(R.string.dbUserame)));
-                                userToBeAdded.setLon(document.getDouble(getResources().getString(R.string.dbLon)));
-                                userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
-                                userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
-                                otherUsers.add(userToBeAdded);
+                                if(!currentUserRef.getId().contentEquals(document.getId())) {
+                                    User userToBeAdded = new User();
+                                    userToBeAdded.setEmail(document.getString(getResources().getString(R.string.dbEmail)));
+                                    userToBeAdded.setUsername(document.getString(getResources().getString(R.string.dbUserame)));
+                                    userToBeAdded.setLon(document.getDouble(getResources().getString(R.string.dbLon)));
+                                    userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
+                                    userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
+                                    userToBeAdded.setUserID(document.getId());
+                                    otherUsers.add(userToBeAdded);
+                                }
                             }
                             populateMapWithCircles(otherUsers); // this will also populate the circle in the map
                         } else {
@@ -315,13 +348,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-
         Map<String, Object> data = new HashMap<>();
         data.put("lat", location.getLatitude());
         data.put("lon", location.getLongitude());
 
-        currentUserRef
-                .set(data, SetOptions.merge());
+        currentUserRef.set(data, SetOptions.merge());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         fetchOtherUsers();
@@ -331,7 +362,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * @author:jack
      *
-     * set up interval eg.1000 means 1s
+     * interval time is in ms
      * check permission
      *
      * */
@@ -339,8 +370,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnected(@Nullable Bundle bundle) {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(100000);
+        locationRequest.setFastestInterval(100000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
         // check if permission for location Fine and Coarse
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -509,7 +540,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void animateCircle(final Circle circle) {
         ValueAnimator vAnimator = ValueAnimator.ofInt(9, 10);
-        //vAnimator.setRepeatCount(ValueAnimator.INFINITE);
+
         vAnimator.setRepeatMode(ValueAnimator.REVERSE);
         vAnimator.setEvaluator(new IntEvaluator());
         vAnimator.setDuration(150);
@@ -523,7 +554,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         vAnimator.start();
-        //Toast.makeText(getApplicationContext(), "Finish animation", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -533,6 +563,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void updateUserAvatar() {
         Glide.with(avatar)
                 .load(currentUser.getPhotoUrl())
+                .placeholder(R.drawable.avatar_default)
+                .into(avatar);
+    }
+
+    /**
+     * set the user profile picture that have been randomly
+     * assigned when user registered.
+     */
+    public void updateOtherUserAvatar(String url) {
+        Glide.with(avatar)
+                .load(url)
                 .placeholder(R.drawable.avatar_default)
                 .into(avatar);
     }
@@ -568,7 +609,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             userAuthenticate.signOut();
             LogOutUser();
         }
-
         return true;
     }
 
