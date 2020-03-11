@@ -118,24 +118,22 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * android:onClick cancel button
      *
      * go to previous screen (loggin activity)
-     *
      */
     public void back(View view){
         finish();
     }
 
     /**
-     *
      * add the new user to the database (Firestore)
-     *
      */
     public void addUserToDB(){
 
         CollectionReference users = db.collection("users");
+
+        final String url = randomAvatarUrl();
 
         Map<String, Object> user = new HashMap<>();
         user.put(getResources().getString(R.string.dbEmail), email);
@@ -143,6 +141,9 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(getResources().getString(R.string.dbPhoneNumber), phoneNumber);
         user.put(getResources().getString(R.string.dbLat), 51.6);
         user.put(getResources().getString(R.string.dbLon), -3.9);
+        user.put(getResources().getString(R.string.dbAvatarUrl), url);
+        user.put(getResources().getString(R.string.dbBio), getResources().getString(R.string.profileDefaultDescription));
+        user.put(getResources().getString(R.string.dbAge), 22);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -150,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
         users.document(currentUser.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                setUserAvatar(currentUser);
+                setUserAvatar(currentUser,url);
                 changeToHomeScreen();
 
             }
@@ -165,12 +166,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * set the user profile picture
-     *
      */
-    private void setUserAvatar(FirebaseUser currentUser){
-        String url = randomAvatarUrl();
+    private void setUserAvatar(FirebaseUser currentUser,String url){
         Uri avatarURL = Uri.parse(url);
 
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
@@ -185,7 +183,8 @@ public class RegisterActivity extends AppCompatActivity {
      * @return String - the URL of the assigned avatar image
      */
     public String randomAvatarUrl(){
-        final String[] AVATARS = { "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2",
+        final String[] AVATARS = {
+                "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%201.jpg?alt=media&token=f30299f7-cfff-48c7-b3e8-d929706cd3b2",
                 "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%202.jpg?alt=media&token=dcd1f7ab-bbd4-465e-964a-89fbee403829",
                 "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%203.jpg?alt=media&token=c250e79f-e6c0-488b-8263-cf057e63bd98",
                 "https://firebasestorage.googleapis.com/v0/b/psyched-garage-265415.appspot.com/o/Avatar%204.jpg?alt=media&token=63ee938d-8e1a-4c00-9661-27d4d1f86366",

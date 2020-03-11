@@ -54,7 +54,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -146,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * author: kevin jason
+     * @author: kevin jason
      * initiate the card view profile and give animation dragging out and in
      *
      * @param llBottomSheet
@@ -199,7 +198,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                 DocumentSnapshot document = task.getResult();
                                                 if (document.exists()) {
                                                     usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
-                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
+                                                    userBioDisplay.setText(document.getString(getResources().getString(R.string.dbBio)));
                                                 } else {
                                                     Log.e(TAG, "No such document");
                                                 }
@@ -211,11 +210,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     usernameDisplay.setText(currentUser.getDisplayName());
                                 } else {
                                     fabStartChat.show();
-                                    updateUserAvatar();
-                                    //updateOtherUserAvatar(userAuthenticate.);
+                                    //updateUserAvatar();
+                                    updateOtherUserAvatar(otherUserToBeShown.getAvatarUrl());
                                     usernameDisplay.setText(otherUserToBeShown.getUsername());
-                                    userBioDisplay.setText(otherUserToBeShown.getUsername());
-                                    usernameDisplay.setText(otherUserToBeShown.getEmail());
+                                    userBioDisplay.setText(otherUserToBeShown.getBio());
                                 }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
@@ -272,7 +270,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .radius(10)
                     .strokeWidth(10)
                     .strokeColor(Color.WHITE)
-                    .fillColor(Color.BLUE)
+                    .fillColor(getResources().getColor(R.color.colorBlueCricle))
                     .clickable(true));
 
             circle.setTag(user);
@@ -310,6 +308,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setLon(document.getDouble(getResources().getString(R.string.dbLon)));
                                     userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
                                     userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
+                                    userToBeAdded.setAvatarUrl(document.getString(getResources().getString(R.string.dbAvatarUrl)));
+                                    //userToBeAdded.setPhoneNumber(document.get(getResources().getString(R.string.dbAge)));
+                                    userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
                                     userToBeAdded.setUserID(document.getId());
                                     otherUsers.add(userToBeAdded);
                                 }
@@ -324,7 +325,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * @author:jack
-     *
      *
      * google client for location
      *
@@ -425,20 +425,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                //Toast.makeText(getApplicationContext(), "id is" + circle.getId(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(), "OBJECT: " + circle.getTag(), Toast.LENGTH_SHORT).show();
                 animateCircle(circle);
                 openBottomSheetOtherUser(circle.getTag());
             }
         };
     }
+
+    /**
+     *
+     * @param user
+     */
     private void openBottomSheetOtherUser(Object user) {
         showingBottomSheetCurrentUser = false;
         otherUserToBeShown = (User) user;
         fabStartChat.show();
-        updateUserAvatar();
+        updateOtherUserAvatar(otherUserToBeShown.getAvatarUrl());
         usernameDisplay.setText(otherUserToBeShown.getUsername());
-        userBioDisplay.setText(otherUserToBeShown.getUsername());
+        userBioDisplay.setText(otherUserToBeShown.getBio());
         usernameDisplay.setText(otherUserToBeShown.getEmail());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
@@ -533,7 +536,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * author: Kevin Jason
-     * <p>
+     *
      * animation clicked for circle
      *
      * @param circle
@@ -584,7 +587,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void LogOutUser() {
         Intent startPageIntent =
                 new Intent(MapsActivity.this, LoginActivity.class);
-        //make sure people can not go back in again
+        // make sure people can not go back in again
         startPageIntent.addFlags
                 (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(startPageIntent);
