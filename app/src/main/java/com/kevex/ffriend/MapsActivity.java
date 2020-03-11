@@ -36,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -75,6 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
+
 
     private boolean mLocationPermissionGranted;
     private boolean showingBottomSheetCurrentUser = true;
@@ -244,6 +246,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         // check permission
         mMap = googleMap;
+        setupMapSettings();
+
         setGoogleMapStyles(googleMap);
 
         if(lastLocation != null){
@@ -254,6 +258,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
 
         mMap.setMyLocationEnabled(true);
+    }
+
+    /*
+     * This method sets up the map UI settings including controls and gestures.
+     */
+    private void setupMapSettings(){
+        UiSettings mUiSettings = mMap.getUiSettings();
+        //Set up google map options below here
+        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setZoomGesturesEnabled(true);
     }
 
     private void populateMapWithCircles(ArrayList<User> otherUsers) {
