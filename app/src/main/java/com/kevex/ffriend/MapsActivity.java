@@ -264,7 +264,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method sets up the map UI settings including controls and gestures.
      */
     private void setupMapSettings(){
+        //setup map attributes here
+        mMap.setMinZoomPreference(10.0f);
+        mMap.setMaxZoomPreference(16.0f);
+
         UiSettings mUiSettings = mMap.getUiSettings();
+
         //Set up google map options below here
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
