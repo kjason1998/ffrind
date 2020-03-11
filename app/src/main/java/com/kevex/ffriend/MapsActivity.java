@@ -76,8 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
-
-
+    
     private boolean mLocationPermissionGranted;
     private boolean showingBottomSheetCurrentUser = true;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
@@ -247,7 +246,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // check permission
         mMap = googleMap;
         setupMapSettings();
-
         setGoogleMapStyles(googleMap);
 
         if(lastLocation != null){
@@ -256,7 +254,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         buildGoogleApiClient();
-
         mMap.setMyLocationEnabled(true);
     }
 
@@ -286,7 +283,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         for(User user : otherUsers) {
             circle = mMap.addCircle(new CircleOptions()
                     .center(new LatLng(user.getLat(), user.getLon()))
-                    .radius(10)
+                    .radius(100)
                     .strokeWidth(10)
                     .strokeColor(Color.WHITE)
                     .fillColor(getResources().getColor(R.color.colorBlueCricle))
