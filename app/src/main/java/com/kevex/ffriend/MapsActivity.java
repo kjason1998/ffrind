@@ -37,10 +37,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -61,7 +64,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -245,6 +248,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         // check permission
         mMap = googleMap;
+        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         setupMapSettings();
         setGoogleMapStyles(googleMap);
 
@@ -270,6 +274,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mUiSettings.setZoomGesturesEnabled(true);
     }
 
+    /** Called when the user clicks a marker. */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        // Retrieve the data from the marker.
+        User user = (User) marker.getTag();
+        openBottomSheetOtherUser(user);
+        return false;
+    }
+
     private void populateMapWithCircles(ArrayList<User> otherUsers) {
 
         Log.d(TAG + "Array Test", otherUsers.toString());
@@ -279,15 +292,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // add updated location circles
         for(User user : otherUsers) {
-            circle = mMap.addCircle(new CircleOptions()
-                    .center(new LatLng(user.getLat(), user.getLon()))
-                    .radius(100)
-                    .strokeWidth(10)
-                    .strokeColor(Color.WHITE)
-                    .fillColor(getResources().getColor(R.color.colorBlueCricle))
-                    .clickable(true));
+            final LatLng userPosition = new LatLng(user.getLat(), user.getLon());
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(userPosition)
+                    .title(user.getUsername())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.liam)));
 
-            circle.setTag(user);
+            marker.setTag(user);
         }
         mMap.setOnCircleClickListener(onClickCircleListener());
     }
