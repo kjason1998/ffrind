@@ -6,6 +6,7 @@
     <color name="colorTextInput">#000000</color>
     <color name="colorGreenDefault">#5BACA3</color>
     <color name="colorPinkDefault">#F4B9C1</color>
+    <color name="colorBlueCricle">#4c8bf5</color>
 
     <!-- profile -->
     <color name="cardViewDefaultBg">#FAFAFA</color>

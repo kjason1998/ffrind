@@ -6,44 +6,14 @@ public class User {
     String username;
     String userID;
     String phonenumber;
+    String avatarUrl;
     String bio;
+    int age;
     double lat;
     double lon;
 
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
     public User() {
 
-    }
-
-    public String getPhonenumber() {
-        return phonenumber;
-    }
-
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
     }
 
     public User(String email, String username, String phoneNumber) {
@@ -57,6 +27,14 @@ public class User {
         setEmail(email);
         setUsername(username);
         setPhoneNumber(phoneNumber);
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getEmail() {
@@ -91,6 +69,48 @@ public class User {
         this.phonenumber = phoneNumber;
     }
 
+
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -98,7 +118,9 @@ public class User {
                 ", username='" + username + '\'' +
                 ", userID='" + userID + '\'' +
                 ", phonenumber='" + phonenumber + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 ", bio='" + bio + '\'' +
+                ", age=" + age +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 '}';
