@@ -10,6 +10,9 @@
     <string name="englishHintPasswordConfirmation">Retype-passwrod</string>
     <string name="englishHintPhoneNumber">Phone number</string>
     <string name="englishHintUsername">Username</string>
+    <string name="englishHintAge">Age Example: 21</string>
+    <string name="englishHintBio">Describe your self</string>
+    <string name="englishHintGender">Male/Female</string>
 
     <!-- database key -->
     <!-- users -->
@@ -39,6 +42,12 @@
     <string name="registerMessageRegisterSuccess">Success</string>
     <string name="registerMessageRegisterFailed">Please try again</string>
     <string name="registerMessagePasswordUnmatched">Password do not match</string>
+
+    <!-- profile setup-->
+    <!-- profile setup xml -->
+    <string name="profileSetupSetButton">Submit</string>
+    <string name="profileSetupSkipButton">Skip</string>
+    <!-- profile setup activity -->
 
     <!-- profile -->
     <!-- profile xml -->

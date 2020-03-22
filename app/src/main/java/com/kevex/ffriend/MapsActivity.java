@@ -91,7 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private User otherUserToBeShown;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private Location lastLocation;
+    private Location lastLocation = new Location("");
     private Circle circle;
 
     @Override
@@ -134,7 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         lastLocation.setLatitude((double)document.get(getString(R.string.dbLat)));
-                        lastLocation.setLatitude((double)document.get(getString(R.string.dbLat)));
+                        lastLocation.setLongitude((double)document.get(getString(R.string.dbLon)));
                     } else {
                         Log.e(TAG, "No such document");
                     }
@@ -262,8 +262,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void setupMapSettings(){
         //setup map attributes here
-        mMap.setMinZoomPreference(10.0f);
-        mMap.setMaxZoomPreference(16.0f);
+        mMap.setMinZoomPreference(12.0f);
+        mMap.setMaxZoomPreference(25.0f);
 
         UiSettings mUiSettings = mMap.getUiSettings();
 
@@ -274,16 +274,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void populateMapWithCircles(ArrayList<User> otherUsers) {
 
-        Log.d(TAG + "Array Test", otherUsers.toString());
-
         // remove the previous circles
         mMap.clear();
 
         // add updated location circles
         for(User user : otherUsers) {
+
             circle = mMap.addCircle(new CircleOptions()
                     .center(new LatLng(user.getLat(), user.getLon()))
-                    .radius(100)
+                    .radius(10)
                     .strokeWidth(10)
                     .strokeColor(Color.WHITE)
                     .fillColor(getResources().getColor(R.color.colorBlueCricle))
@@ -325,18 +324,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
                                     userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
                                     userToBeAdded.setAvatarUrl(document.getString(getResources().getString(R.string.dbAvatarUrl)));
-                                    //userToBeAdded.setPhoneNumber(document.get(getResources().getString(R.string.dbAge)));
+                                    //userToBeAdded.setPhoneNumber(document.get(getResources().getString(R.string.dbAge))); -- change this to age later
                                     userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
                                     userToBeAdded.setUserID(document.getId());
                                     otherUsers.add(userToBeAdded);
                                 }
                             }
-                            populateMapWithCircles(otherUsers); // this will also populate the circle in the map
+
+                            ArrayList<User> newOhterArrayUserFilteredByLat = filterByLat(otherUsers);
+                            populateMapWithCircles(newOhterArrayUserFilteredByLat); // this will also populate the circle in the map
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
+    }
+
+    private ArrayList<User> filterByLat(ArrayList<User> otherUsers) {
+        ArrayList<User> newOtherUserFiltered = new ArrayList<>();
+        for(User user:otherUsers){
+            if(user.getLat()>lastLocation.getLatitude()-1){
+                if(user.getLat()<lastLocation.getLatitude()+1){
+                    newOtherUserFiltered.add(user);
+                }
+            }
+        }
+        return newOtherUserFiltered;
     }
 
     /**
@@ -369,8 +382,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         data.put("lon", location.getLongitude());
 
         currentUserRef.set(data, SetOptions.merge());
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         fetchOtherUsers();
 
     }
@@ -386,8 +399,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnected(@Nullable Bundle bundle) {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(100000);
-        locationRequest.setFastestInterval(100000);
+        locationRequest.setInterval(60000);
+        locationRequest.setFastestInterval(60000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
         // check if permission for location Fine and Coarse
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

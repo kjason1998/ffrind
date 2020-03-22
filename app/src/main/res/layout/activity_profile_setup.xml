@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/main_logo"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.7">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.3">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/profileSetupDescription"
+                            android:inputType="textLongMessage"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:gravity="top|left"
+                            android:hint="@string/englishHintBio"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+
+                        <EditText
+                            android:id="@+id/profileSetupAge"
+                            android:inputType=""
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/englishHintAge"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/profileGenderMale"/>
+
+                            <RadioButton
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/profileGenderFemale"/>
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_horizontal">
+
+                            <Button
+                                android:id="@+id/profileSetupSkipButton"
+                                android:onClick="register"
+                                android:text="@string/profileSetupSkipButton"
+                                android:background="@drawable/background_button_green"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/verticalInputPadding"/>
+
+                            <Button
+                                android:id="@+id/profileSetupSubmitButton"
+                                android:onClick="back"
+                                android:text="@string/profileSetupSetButton"
+                                android:background="@drawable/background_button_pink"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/verticalInputPadding"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
