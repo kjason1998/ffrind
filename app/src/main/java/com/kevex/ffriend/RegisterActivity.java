@@ -3,6 +3,7 @@ package com.kevex.ffriend;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -47,6 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText registerPhoneNumber;
     private EditText registerConfirmPassword;
 
+
+    private ProgressDialog progressDialog;
+
     @Override
     public void onStart(){
         super.onStart();
@@ -55,6 +59,8 @@ public class RegisterActivity extends AppCompatActivity {
         if(currentUser != null){
             changeToHomeScreen();
         }
+
+        initiateProgressDialog();
     }
 
     @Override
@@ -75,6 +81,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
+     * Initiate the progress dialog that will be used in register button.
+     */
+    private void initiateProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Registering");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+    }
+
+    /**
      *
      * android:onClick for register button
      * This will register a new user
@@ -82,8 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
      * @param view
      */
     public void register(View view){
-        Toast.makeText(RegisterActivity.this, TAG + " register button clicked",
-                Toast.LENGTH_SHORT).show();
+        progressDialog.show();
 
         email = registerEmail.getText().toString();
         password = registerPassword.getText().toString();
@@ -102,19 +117,33 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
                                         Toast.LENGTH_SHORT).show();
                             }
+                            progressDialog.dismiss();
                         }
                     });
         } else {
+            progressDialog.dismiss();
             Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
                     Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
+    /**
+     * Open the google map activity.
+     */
     private void changeToHomeScreen() {
         Intent homeIntent = new Intent(this, MapsActivity.class);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);
+    }
+
+    /**
+     * Open the google map activity.
+     */
+    private void changeToProfileSetupScreen() {
+        Intent profileSetupIntent = new Intent(this, ProfileSetupActivity.class);
+        profileSetupIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(profileSetupIntent);
     }
 
     /**
