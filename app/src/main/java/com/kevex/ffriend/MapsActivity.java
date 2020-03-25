@@ -76,7 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
-    
+
     private boolean mLocationPermissionGranted;
     private boolean showingBottomSheetCurrentUser = true;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
@@ -250,7 +250,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(lastLocation != null){
             fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
-
         }
 
         buildGoogleApiClient();
@@ -268,7 +267,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         UiSettings mUiSettings = mMap.getUiSettings();
 
         //Set up google map options below here
-        mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
     }
 
