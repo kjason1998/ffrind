@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -142,7 +141,6 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void changeToProfileSetupScreen() {
         Intent profileSetupIntent = new Intent(this, ProfileSetupActivity.class);
-        profileSetupIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(profileSetupIntent);
     }
 
@@ -173,6 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(getResources().getString(R.string.dbAvatarUrl), url);
         user.put(getResources().getString(R.string.dbBio), getResources().getString(R.string.profileDefaultDescription));
         user.put(getResources().getString(R.string.dbAge), 22);
+        user.put(getResources().getString(R.string.dbGender), getResources().getString(R.string.profileGenderMale));
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -182,6 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 setUserAvatar(currentUser,url);
                 changeToHomeScreen();
+                changeToProfileSetupScreen();
 
             }
         }).addOnFailureListener(new OnFailureListener() {

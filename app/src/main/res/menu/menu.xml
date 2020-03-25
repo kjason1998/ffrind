@@ -6,4 +6,9 @@
         android:id="@+id/main_logout_button"
         app:showAsAction="never">
     </item>
+
+    <item android:title="Profile edit"
+        android:id="@+id/main_profile_edit_button"
+        app:showAsAction="never">
+    </item>
 </menu>

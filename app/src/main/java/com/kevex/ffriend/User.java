@@ -8,6 +8,7 @@ public class User {
     String phonenumber;
     String avatarUrl;
     String bio;
+    String gender;
     int age;
     double lat;
     double lon;
@@ -27,6 +28,14 @@ public class User {
         setEmail(email);
         setUsername(username);
         setPhoneNumber(phoneNumber);
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getAge() {
@@ -120,6 +129,7 @@ public class User {
                 ", phonenumber='" + phonenumber + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", bio='" + bio + '\'' +
+                ", gender='" + gender + '\'' +
                 ", age=" + age +
                 ", lat=" + lat +
                 ", lon=" + lon +

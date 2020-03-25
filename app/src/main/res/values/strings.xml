@@ -54,7 +54,11 @@
     <string name="profileDefaultUsername">Kevin Jason</string>
     <string name="profileGenderMale"> Male</string>
     <string name="profileGenderFemale"> Female</string>
-    <string name="profileDefaultAge">Years old/</string>
+    <string name="profileDefaultAge"> Years old/</string>
     <string name="profileDefaultDescription">        In a library, the word biography refers both to a kind of book and to a section where books of that kind are found. Each biography tells the story of a real person\'s life. A biography may be about someone who lived long ago, recently, or even someone who is still living, though in the last case it must necessarily be incomplete. The term autobiograp</string>
+    <string name="profileSetupMessageGenderWrong">Please pick a gender</string>
+    <string name="profileSetupMessageInputEmpty">Please fill all inputs</string>
+    <string name="dbGender">gender</string>
+    <string name="profileSetupMessageAgeWrong">Age needs to be between 16 and 150</string>
     <!-- profile activity -->
 </resources>

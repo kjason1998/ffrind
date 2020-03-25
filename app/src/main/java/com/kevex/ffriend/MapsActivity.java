@@ -85,6 +85,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView avatar;
     private TextView usernameDisplay;
     private TextView userBioDisplay;
+    private TextView userAgeDisplay;
+    private TextView userGenderDisplay;
     private FloatingActionButton fabStartChat;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -161,6 +163,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 avatar = findViewById(R.id.avatarImageView);
                 usernameDisplay = findViewById(R.id.profileUserNameInfo);
                 userBioDisplay = findViewById(R.id.profileBioInfo);
+                userAgeDisplay = findViewById(R.id.profileAgeInfo);
+                userGenderDisplay = findViewById(R.id.profileGenderInfo);
                 fabStartChat = findViewById(R.id.fabStartChat);
             }
         });
@@ -200,6 +204,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                 if (document.exists()) {
                                                     usernameDisplay.setText(document.getString(getResources().getString(R.string.dbUserame)));
                                                     userBioDisplay.setText(document.getString(getResources().getString(R.string.dbBio)));
+                                                    userGenderDisplay.setText(document.getString(getResources().getString(R.string.dbGender)));
+                                                    userAgeDisplay.setText(document.getString(getResources().getString(R.string.dbAge)));
                                                 } else {
                                                     Log.e(TAG, "No such document");
                                                 }
@@ -215,6 +221,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     updateOtherUserAvatar(otherUserToBeShown.getAvatarUrl());
                                     usernameDisplay.setText(otherUserToBeShown.getUsername());
                                     userBioDisplay.setText(otherUserToBeShown.getBio());
+                                    userGenderDisplay.setText(otherUserToBeShown.getGender());
+                                    userAgeDisplay.setText(otherUserToBeShown.getAge());
                                 }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
@@ -324,8 +332,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
                                     userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
                                     userToBeAdded.setAvatarUrl(document.getString(getResources().getString(R.string.dbAvatarUrl)));
-                                    //userToBeAdded.setPhoneNumber(document.get(getResources().getString(R.string.dbAge))); -- change this to age later
+                                    userToBeAdded.setAge(Integer.valueOf(document.getString(getResources().getString(R.string.dbAge))));
                                     userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
+                                    userToBeAdded.setGender(document.getString(getResources().getString(R.string.dbGender)));
                                     userToBeAdded.setUserID(document.getId());
                                     otherUsers.add(userToBeAdded);
                                 }
@@ -623,6 +632,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         finish();
     }
 
+    /**
+     * Open the google map activity.
+     */
+    private void changeToProfileSetupScreen() {
+        Intent profileSetupIntent = new Intent(this, ProfileSetupActivity.class);
+        startActivity(profileSetupIntent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -640,6 +656,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (item.getItemId() == R.id.main_logout_button) {
             userAuthenticate.signOut();
             LogOutUser();
+        }
+        if (item.getItemId() == R.id.main_profile_edit_button) {
+            changeToProfileSetupScreen();
         }
         return true;
     }

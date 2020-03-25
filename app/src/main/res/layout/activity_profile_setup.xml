@@ -47,10 +47,10 @@
 
                         <EditText
                             android:id="@+id/profileSetupDescription"
-                            android:inputType="textLongMessage"
                             android:layout_width="match_parent"
                             android:layout_height="120dp"
                             android:gravity="top|left"
+                            android:inputType="textMultiLine|textCapSentences"
                             android:hint="@string/englishHintBio"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
@@ -61,7 +61,7 @@
 
                         <EditText
                             android:id="@+id/profileSetupAge"
-                            android:inputType=""
+                            android:inputType="number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/englishHintAge"
@@ -72,17 +72,20 @@
                             android:paddingBottom="@dimen/bottomInputPadding"
                             android:paddingTop="@dimen/verticalInputPadding"/>
                         <RadioGroup
+                            android:id="@+id/profileSetupRadioGenderGroup"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
                             <RadioButton
+                                android:id="@+id/profileSetupRadioMaleRadioButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/profileGenderMale"/>
 
                             <RadioButton
+                                android:id="@+id/profileSetupRadioFemaleRadioButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -98,7 +101,7 @@
 
                             <Button
                                 android:id="@+id/profileSetupSkipButton"
-                                android:onClick="register"
+                                android:onClick="skip"
                                 android:text="@string/profileSetupSkipButton"
                                 android:background="@drawable/background_button_green"
                                 android:layout_width="wrap_content"
@@ -107,7 +110,7 @@
 
                             <Button
                                 android:id="@+id/profileSetupSubmitButton"
-                                android:onClick="back"
+                                android:onClick="submit"
                                 android:text="@string/profileSetupSetButton"
                                 android:background="@drawable/background_button_pink"
                                 android:layout_width="wrap_content"
