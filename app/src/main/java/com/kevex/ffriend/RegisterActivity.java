@@ -170,7 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(getResources().getString(R.string.dbLon), -3.9);
         user.put(getResources().getString(R.string.dbAvatarUrl), url);
         user.put(getResources().getString(R.string.dbBio), getResources().getString(R.string.profileDefaultDescription));
-        user.put(getResources().getString(R.string.dbAge), 22);
+        user.put(getResources().getString(R.string.dbAge), getResources().getString(R.string.profileDefaultAge));
         user.put(getResources().getString(R.string.dbGender), getResources().getString(R.string.profileGenderMale));
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
