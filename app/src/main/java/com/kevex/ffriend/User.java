@@ -9,7 +9,7 @@ public class User {
     String avatarUrl;
     String bio;
     String gender;
-    int age;
+    String age;
     double lat;
     double lon;
 
@@ -42,11 +42,11 @@ public class User {
         this.gender = gender;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 

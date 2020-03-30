@@ -86,12 +86,12 @@ public class ProfileSetupActivity extends AppCompatActivity {
     public void submit(View view){
 
         String newDescription = bioEditText.getText().toString();
-        String newAge = ageEditText.getText().toString();
-
+        String newAgeString = ageEditText.getText().toString();
+        String newAge = newAgeString;
         int selected = radioGroupGender.getCheckedRadioButtonId();
 
-        if(!newDescription.isEmpty() && !newAge.isEmpty()){
-            if(checkAgeFormat(newAge)) {
+        if(!newDescription.isEmpty() && !newAgeString.isEmpty()){
+            if(checkAgeFormat(newAgeString)) {
                 if (selected == RADIO_ID_MALE) {
                     updateDetail(newDescription, newAge, getResources().getString(R.string.profileGenderMale));
                 } else if (selected == RADIO_ID_FEMALE) {
@@ -139,7 +139,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
      * @param age - new Age (16-150) for the user
      * @param gender - new Gender (male/female) for the user
      */
-    private void updateDetail(String bio,String age,String gender) {
+    private void updateDetail(String bio, String age, String gender) {
         Map<String, Object> data = new HashMap<>();
         data.put(getResources().getString(R.string.dbAge), age);
         data.put(getResources().getString(R.string.dbBio), bio);
