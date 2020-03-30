@@ -13,6 +13,10 @@ public class User {
     double lat;
     double lon;
 
+    /**
+     * TODO: Make sure to check set methods
+     * A User represent one user
+     */
     public User() {
 
     }
@@ -77,8 +81,6 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phonenumber = phoneNumber;
     }
-
-
 
     public String getPhonenumber() {
         return phonenumber;
