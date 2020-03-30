@@ -332,7 +332,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setLat(document.getDouble(getResources().getString(R.string.dbLat)));
                                     userToBeAdded.setPhoneNumber(document.getString(getResources().getString(R.string.dbPhoneNumber)));
                                     userToBeAdded.setAvatarUrl(document.getString(getResources().getString(R.string.dbAvatarUrl)));
-                                    userToBeAdded.setAge(Integer.valueOf(document.getString(getResources().getString(R.string.dbAge))));
+                                    userToBeAdded.setAge(document.getString(getResources().getString(R.string.dbAge)));
                                     userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
                                     userToBeAdded.setGender(document.getString(getResources().getString(R.string.dbGender)));
                                     userToBeAdded.setUserID(document.getId());
