@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
+    tools:context=".Activities.ProfileSetupActivity"
     android:orientation="vertical"
     android:background="@color/colorPrimary">
 
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:src="@drawable/main_logo"/>
+            android:src="@drawable/main_logo" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -101,7 +101,7 @@
 
                             <Button
                                 android:id="@+id/profileSetupSkipButton"
-                                android:onClick="skip"
+                                android:onClick="skipProfileSetup"
                                 android:text="@string/profileSetupSkipButton"
                                 android:background="@drawable/background_button_green"
                                 android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
 
                             <Button
                                 android:id="@+id/profileSetupSubmitButton"
-                                android:onClick="submit"
+                                android:onClick="submitProfileSetup"
                                 android:text="@string/profileSetupSetButton"
                                 android:background="@drawable/background_button_pink"
                                 android:layout_width="wrap_content"

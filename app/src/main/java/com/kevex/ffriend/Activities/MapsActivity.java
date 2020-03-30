@@ -1,4 +1,4 @@
-package com.kevex.ffriend;
+package com.kevex.ffriend.Activities;
 
 import android.Manifest;
 import android.animation.IntEvaluator;
@@ -54,6 +54,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.kevex.ffriend.Model.User;
+import com.kevex.ffriend.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

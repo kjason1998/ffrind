@@ -1,10 +1,9 @@
-package com.kevex.ffriend;
+package com.kevex.ffriend.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.kevex.ffriend.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,13 +77,20 @@ public class ProfileSetupActivity extends AppCompatActivity {
     }
 
     /**
+     * skip button method for this activity
+     */
+    public void skipProfileSetup(View view){
+        changeToHomeScreen();
+    }
+
+    /**
      * submit button method for this activity
      *
      * check all input are not empty
      * check age is between 16 and 150
      * check if radio button is chosen
      */
-    public void submit(View view){
+    public void submitProfileSetup(View view){
 
         String newDescription = bioEditText.getText().toString();
         String newAgeString = ageEditText.getText().toString();
@@ -123,13 +130,6 @@ public class ProfileSetupActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(this, MapsActivity.class);
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(homeIntent);
-    }
-
-    /**
-     * skip button method for this activity
-     */
-    public void skip(View view){
-        changeToHomeScreen();
     }
 
     /**

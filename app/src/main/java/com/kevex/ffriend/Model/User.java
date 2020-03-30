@@ -1,4 +1,4 @@
-package com.kevex.ffriend;
+package com.kevex.ffriend.Model;
 
 public class User {
 
