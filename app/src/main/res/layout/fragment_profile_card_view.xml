@@ -76,7 +76,7 @@
                                             android:textColor="@color/colorGreenDefault"
                                             android:textStyle="italic"
                                             android:textSize="@dimen/textViewDefault"
-                                            android:text="@string/profileDefaultAge"/>
+                                            android:text="@string/profileSeperator"/>
                                         <TextView
                                             android:id="@+id/profileGenderInfo"
                                             android:layout_width="wrap_content"

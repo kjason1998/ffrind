@@ -21,6 +21,11 @@ import com.kevex.ffriend.R;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author kevin
+ * Profile settup is an activity for changging some default information
+ * TODO: Sajal ask to change showing profile picture instead of showing logo
+ */
 public class ProfileSetupActivity extends AppCompatActivity {
     private final static int RADIO_ID_MALE = 1000;
     private final static int RADIO_ID_FEMALE = 2000;
