@@ -1,4 +1,4 @@
-package com.kevex.ffriend;
+package com.kevex.ffriend.Model;
 
 public class User {
 
@@ -8,10 +8,15 @@ public class User {
     String phonenumber;
     String avatarUrl;
     String bio;
-    int age;
+    String gender;
+    String age;
     double lat;
     double lon;
 
+    /**
+     * TODO: Make sure to check set methods
+     * A User represent one user
+     */
     public User() {
 
     }
@@ -29,11 +34,19 @@ public class User {
         setPhoneNumber(phoneNumber);
     }
 
-    public int getAge() {
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -68,8 +81,6 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phonenumber = phoneNumber;
     }
-
-
 
     public String getPhonenumber() {
         return phonenumber;
@@ -120,6 +131,7 @@ public class User {
                 ", phonenumber='" + phonenumber + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", bio='" + bio + '\'' +
+                ", gender='" + gender + '\'' +
                 ", age=" + age +
                 ", lat=" + lat +
                 ", lon=" + lon +

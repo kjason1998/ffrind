@@ -3,5 +3,5 @@
     <corners android:radius="1dp"
         android:topLeftRadius="20dp"
         android:topRightRadius="20dp"/>
-    <solid android:color="@color/cardViewDefaultBg" />
+    <solid android:color="@color/white" />
 </shape>

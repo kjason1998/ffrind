@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.RegisterActivity"
+    tools:context=".Activities.ProfileSetupActivity"
     android:orientation="vertical"
     android:background="@color/colorPrimary">
 
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:src="@drawable/main_logo"/>
+            android:src="@drawable/main_logo" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,67 +44,58 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <EditText
-                            android:id="@+id/registerUserNameInput"
-                            android:inputType="textVisiblePassword"
+                            android:id="@+id/profileSetupDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:gravity="top|left"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:hint="@string/englishHintBio"
+                            android:textSize="@dimen/inpuStringSize"
+                            android:background="@drawable/background_input_text_login_shadow"
+                            android:paddingStart="@dimen/verticalInputPadding"
+                            android:paddingEnd="@dimen/verticalInputPadding"
+                            android:paddingBottom="@dimen/bottomInputPadding"
+                            android:paddingTop="@dimen/verticalInputPadding"/>
+
+                        <EditText
+                            android:id="@+id/profileSetupAge"
+                            android:inputType="number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/englishHintUsername"
+                            android:hint="@string/englishHintAge"
                             android:textSize="@dimen/inpuStringSize"
                             android:background="@drawable/background_input_text_login_shadow"
                             android:paddingStart="@dimen/verticalInputPadding"
                             android:paddingEnd="@dimen/verticalInputPadding"
                             android:paddingBottom="@dimen/bottomInputPadding"
                             android:paddingTop="@dimen/verticalInputPadding"/>
-                        <EditText
-                            android:id="@+id/registerEmailInput"
-                            android:inputType="textEmailAddress"
+                        <RadioGroup
+                            android:id="@+id/profileSetupRadioGenderGroup"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:hint="@string/englishHintEmail"
-                            android:textSize="@dimen/inpuStringSize"
-                            android:background="@drawable/background_input_text_login_shadow"
-                            android:paddingStart="@dimen/verticalInputPadding"
-                            android:paddingEnd="@dimen/verticalInputPadding"
-                            android:paddingBottom="@dimen/bottomInputPadding"
-                            android:paddingTop="@dimen/verticalInputPadding"/>
-                        <EditText
-                            android:id="@+id/registerPhoneNumberInput"
-                            android:inputType="phone"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:hint="@string/englishHintPhoneNumber"
-                            android:textSize="@dimen/inpuStringSize"
-                            android:background="@drawable/background_input_text_login_shadow"
-                            android:paddingStart="@dimen/verticalInputPadding"
-                            android:paddingEnd="@dimen/verticalInputPadding"
-                            android:paddingBottom="@dimen/bottomInputPadding"
-                            android:paddingTop="@dimen/verticalInputPadding"/>
-                        <EditText
-                            android:id="@+id/registerPasswordInput"
-                            android:inputType="textPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:hint="@string/englishHintPassword"
-                            android:textSize="@dimen/inpuStringSize"
-                            android:textStyle="normal"
-                            android:background="@drawable/background_input_text_login_shadow"
-                            android:paddingStart="@dimen/verticalInputPadding"
-                            android:paddingEnd="@dimen/verticalInputPadding"
-                            android:paddingBottom="@dimen/bottomInputPadding"
-                            android:paddingTop="@dimen/verticalInputPadding"/>
-                        <EditText
-                            android:id="@+id/registerPasswordConfirmationInput"
-                            android:inputType="textPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:hint="@string/englishHintPasswordConfirmation"
-                            android:textSize="@dimen/inpuStringSize"
-                            android:background="@drawable/background_input_text_login_shadow"
-                            android:paddingStart="@dimen/verticalInputPadding"
-                            android:paddingEnd="@dimen/verticalInputPadding"
-                            android:paddingBottom="@dimen/bottomInputPadding"
-                            android:paddingTop="@dimen/verticalInputPadding"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/profileSetupRadioMaleRadioButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/profileGenderMale"
+                                android:textColor="@color/white"
+                                android:buttonTint="@color/white"/>
+
+                            <RadioButton
+                                android:id="@+id/profileSetupRadioFemaleRadioButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/profileGenderFemale"
+                                android:textColor="@color/white"
+                                android:buttonTint="@color/white"/>
+                        </RadioGroup>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -113,18 +104,18 @@
                             android:gravity="center_horizontal">
 
                             <Button
-                                android:id="@+id/registerRegisterButton"
-                                android:onClick="register"
-                                android:text="@string/registerRegisterButton"
+                                android:id="@+id/profileSetupSkipButton"
+                                android:onClick="skipProfileSetup"
+                                android:text="@string/profileSetupSkipButton"
                                 android:background="@drawable/background_button_green"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="@dimen/verticalInputPadding"/>
 
                             <Button
-                                android:id="@+id/registerCancelButton"
-                                android:onClick="back"
-                                android:text="@string/registerCancelButton"
+                                android:id="@+id/profileSetupSubmitButton"
+                                android:onClick="submitProfileSetup"
+                                android:text="@string/profileSetupSetButton"
                                 android:background="@drawable/background_button_pink"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
