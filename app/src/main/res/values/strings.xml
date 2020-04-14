@@ -25,6 +25,17 @@
     <string name="dbAvatarUrl">avatarurl</string>
     <string name="dbBio">biography</string>
     <string name="dbAge">age</string>
+    <!-- chats -->
+    <string name="dbChats">chats</string>
+    <string name="dbMessages">messages</string>
+    <string name="dbMessage">message</string>
+    <string name="dbStartConversation">startconversation</string>
+    <string name="dbParticipants">participants</string>
+    <string name="dbParticipant">participants</string>
+    <string name="dbSenderUid">senderuid</string>
+
+    <!-- intent -->
+    <string name="intetntOhterUser">OTHER_USER</string>
 
     <!-- login -->
     <!-- login xml -->
@@ -62,4 +73,6 @@
     <string name="dbGender">gender</string>
     <string name="profileSetupMessageAgeWrong">Age needs to be between 16 and 150</string>
     <!-- profile activity -->
+    <string name="startChatException">User that cannot be found!</string>
+    <string name="chat_message_chat_view_message">cannot display message</string>
 </resources>
