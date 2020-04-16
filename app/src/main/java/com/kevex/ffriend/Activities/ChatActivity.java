@@ -196,7 +196,6 @@ public class ChatActivity extends AppCompatActivity {
 
     public void startScan(View view) {
         startActivity(new Intent(this, ScanActivity.class));
-
     }
 
     public void generateQR(View view) {
