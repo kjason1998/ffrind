@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,9 +33,14 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ServerTimestamp;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.kevex.ffriend.Adapter.MessageAdapter;
 import com.kevex.ffriend.Model.User;
 import com.kevex.ffriend.R;
+import com.kevex.ffriend.view.QrCodeView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +50,8 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private final String TAG = "ChatActivity";
-    @ServerTimestamp Date time;
+    @ServerTimestamp
+    Date time;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore database;
@@ -62,6 +73,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private Toolbar chatToolBar;
     private User otherUser;
+    private ImageView ivQr;
+    private View layout;
 
 
     @Override
@@ -69,9 +82,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        ivQr = (ImageView) findViewById(R.id.iv_qr);
 
         Intent intent = getIntent();
-        otherUser = (User)intent.getSerializableExtra(getResources().getString(R.string.intetntOhterUser));
+        otherUser = (User) intent.getSerializableExtra(getResources().getString(R.string.intetntOhterUser));
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseFirestore.getInstance();
@@ -129,13 +143,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void putNewMessageInFirestore(String message) {
-        if(!chatId.isEmpty() && chatReference != null){
+        if (!chatId.isEmpty() && chatReference != null) {
 
             // Atomically add a new region to the "regions" array field.
-            Map<String,Object> newMessage = new HashMap();
-            newMessage.put(getResources().getString(R.string.dbMessage),message);
-            newMessage.put(getResources().getString(R.string.dbSenderUid),mAuth.getCurrentUser().getUid());
-            newMessage.put(getResources().getString(R.string.dbSentMessage),new Date());
+            Map<String, Object> newMessage = new HashMap();
+            newMessage.put(getResources().getString(R.string.dbMessage), message);
+            newMessage.put(getResources().getString(R.string.dbSenderUid), mAuth.getCurrentUser().getUid());
+            newMessage.put(getResources().getString(R.string.dbSentMessage), new Date());
             chatReference.update(getResources().getString(R.string.dbMessages), FieldValue.arrayUnion(newMessage));
         }
     }
@@ -199,6 +213,28 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void generateQR(View view) {
+        String userID = otherUser.getUserID();
+        QRCodeWriter writer = new QRCodeWriter();
+        ivQr = (ImageView) findViewById(R.id.iv_qr);
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.view_dialog_qr, null);
+        ImageView qrCodeImage = layout.findViewById(R.id.iv_qr);
+        Bitmap bitmap = null;
+        try {
+            BitMatrix matrix = writer.encode(userID.trim(), BarcodeFormat.QR_CODE, 300, 300);
+            bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.RGB_565);
+            for (int i = 0; i < 300; i++) {
+                for (int j = 0; j < 300; j++) {
+                    bitmap.setPixel(i, j, matrix.get(i, j) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            qrCodeImage.setImageBitmap(bitmap);
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        new QrCodeView(this, bitmap).show();
 
     }
 }

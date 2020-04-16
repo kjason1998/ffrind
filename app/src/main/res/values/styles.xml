@@ -11,4 +11,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="style_dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_popup_zoom_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_popup_zoom_exit</item>
+    </style>
+
 </resources>
