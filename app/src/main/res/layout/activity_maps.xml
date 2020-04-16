@@ -35,7 +35,8 @@
         android:layout_margin="16dp"
         android:src="@drawable/message_icon"
         app:fabSize="auto"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:onClick="startChat"/>
 
     <include
         layout="@layout/fragment_profile_card_view"

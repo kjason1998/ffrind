@@ -42,22 +42,29 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
 import com.google.firebase.firestore.SetOptions;
+import com.kevex.ffriend.Model.Chat;
 import com.kevex.ffriend.Model.User;
 import com.kevex.ffriend.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -70,10 +77,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final String TAG = "MapsActivity";
 
+    @ServerTimestamp
+    Date time;
+
     private final int locationRequestCode = 1000;
     private FirebaseAuth userAuthenticate;
     private FirebaseFirestore db;
     private DocumentReference currentUserRef;
+    private DocumentReference otherUserRef;
     private FirebaseUser currentUser;
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -119,6 +130,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentUser = userAuthenticate.getCurrentUser();
         currentUserRef = db.collection(this.getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
+
         updateInitialLocation();
 
         //setup tool bar
@@ -139,6 +151,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (document.exists()) {
                         lastLocation.setLatitude((double)document.get(getString(R.string.dbLat)));
                         lastLocation.setLongitude((double)document.get(getString(R.string.dbLon)));
+                        fetchOtherUsers();
                     } else {
                         Log.e(TAG, "No such document");
                     }
@@ -243,6 +256,80 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
+    /**
+     * handle FOB to start chat with other user to be shown
+     * user to be shown is the user that have been clicked
+     * TODO: make sure that other user to be show is not null
+     * @param view
+     */
+    public void startChat(View view) {
+        if(otherUserToBeShown != null){
+            currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            if(document.get(otherUserToBeShown.getUserID()) == null){
+                                initiateNewConversation();
+                            }
+                        } else {
+                            Log.e(TAG, "user already have initiate a conversation");
+                        }
+                    } else {
+                        Log.e(TAG, "checking conversation failed : ", task.getException());
+                    }
+                }
+            });
+            Intent startChatIntent = new Intent(getBaseContext(), ChatActivity.class);
+            startChatIntent.putExtra(getResources().getString(R.string.intetntOhterUser), otherUserToBeShown);
+            startActivity(startChatIntent);
+        }else{
+            throw new NullPointerException(getResources().getString(R.string.startChatException));
+        }
+    }
+
+    /**
+     * after checking conversation are not made yet call this method to:
+     * make a new chat document in chats firestore
+     * and put that chat id in both of the user
+     */
+    private void initiateNewConversation() {
+        otherUserRef =  db.collection( getResources().getString(R.string.dbUsers)).document(otherUserToBeShown.getUserID());
+        CollectionReference chats = db.collection(getResources().getString(R.string.dbChats));
+
+        Map<String, Object> newChat = new HashMap<>();
+        newChat.put(getResources().getString(R.string.dbStartConversation), FieldValue.serverTimestamp());
+        newChat.put(getResources().getString(R.string.dbMessages), Arrays.asList());
+        newChat.put(getResources().getString(R.string.dbParticipant), Arrays.asList(currentUserRef.getId(),otherUserRef.getId()));
+
+        // make a new chat document in chats
+        chats.add(newChat)
+            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    // update the database of the two users
+                    String newChatID = documentReference.getId();
+                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+
+                    Map<String, Object> newCurrentUserData = new HashMap<>();
+                    newCurrentUserData.put(otherUserToBeShown.getUserID(), newChatID);
+
+                    currentUserRef.set(newCurrentUserData, SetOptions.merge());
+
+                    Map<String, Object> newOtherUserData = new HashMap<>();
+                    newOtherUserData.put(currentUserRef.getId(), newChatID);
+
+                    otherUserRef.set(newOtherUserData, SetOptions.merge());
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error adding document", e);
+                }
+            });
+    }
 
     /**
      * Manipulates the map, once available.
@@ -260,7 +347,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(lastLocation != null){
             fetchOtherUsers(); // this will get user data in firestore and populate it in the map with circle as a user
-
         }
 
         buildGoogleApiClient();
