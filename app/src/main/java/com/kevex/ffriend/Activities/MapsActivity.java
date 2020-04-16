@@ -308,16 +308,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         newChat.put(getResources().getString(R.string.dbMessages), Arrays.asList());
         newChat.put(getResources().getString(R.string.dbParticipant), Arrays.asList(currentUserRef.getId(),otherUserRef.getId()));
 
-        Log.d(TAG,"debug1 outside1");
-        Log.d(TAG,"debug1 ->"+newChat.toString());
-
         // make a new chat document in chats
         db.collection(getResources().getString(R.string.dbChats))
                 .add(newChat)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG,"debug1 inside1");
                         // update the database of the two users
                         String newChatID = documentReference.getId();
                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
@@ -337,37 +333,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG,"debug1 failed");
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-
-        /*chats.add(newChat).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Log.d(TAG,"debug1 inside1");
-                    // update the database of the two users
-                    String newChatID = documentReference.getId();
-                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-
-                    Map<String, Object> newCurrentUserData = new HashMap<>();
-                    newCurrentUserData.put(otherUserToBeShown.getUserID(), newChatID);
-
-                    currentUserRef.set(newCurrentUserData, SetOptions.merge());
-
-                    Map<String, Object> newOtherUserData = new HashMap<>();
-                    newOtherUserData.put(currentUserRef.getId(), newChatID);
-
-                    otherUserRef.set(newOtherUserData, SetOptions.merge());
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG,"debug1 failed");
-                    Log.w(TAG, "Error adding document", e);
-                }
-            });*/
     }
 
     /**
