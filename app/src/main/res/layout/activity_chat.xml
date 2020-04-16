@@ -40,7 +40,7 @@
 
             <MultiAutoCompleteTextView
                 android:background="@drawable/background_input_chat"
-                android:id="@+id/chatActivityMessageTextView"
+                android:id="@+id/chatInputMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"

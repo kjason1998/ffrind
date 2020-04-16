@@ -271,7 +271,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             if(document.get(otherUserToBeShown.getUserID()) == null){
+                                Log.d(TAG,"debug1 initiate new conversation");
                                 initiateNewConversation();
+                            }else{
+                                goToChat();
                             }
                         } else {
                             Log.e(TAG, "user already have initiate a conversation");
@@ -281,12 +284,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             });
-            Intent startChatIntent = new Intent(getBaseContext(), ChatActivity.class);
-            startChatIntent.putExtra(getResources().getString(R.string.intetntOhterUser), otherUserToBeShown);
-            startActivity(startChatIntent);
         }else{
             throw new NullPointerException(getResources().getString(R.string.startChatException));
         }
+    }
+
+    private void goToChat() {
+        Intent startChatIntent = new Intent(getBaseContext(), ChatActivity.class);
+        startChatIntent.putExtra(getResources().getString(R.string.intetntOhterUser), otherUserToBeShown);
+        startActivity(startChatIntent);
     }
 
     /**
@@ -296,18 +302,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void initiateNewConversation() {
         otherUserRef =  db.collection( getResources().getString(R.string.dbUsers)).document(otherUserToBeShown.getUserID());
-        CollectionReference chats = db.collection(getResources().getString(R.string.dbChats));
 
         Map<String, Object> newChat = new HashMap<>();
         newChat.put(getResources().getString(R.string.dbStartConversation), FieldValue.serverTimestamp());
         newChat.put(getResources().getString(R.string.dbMessages), Arrays.asList());
         newChat.put(getResources().getString(R.string.dbParticipant), Arrays.asList(currentUserRef.getId(),otherUserRef.getId()));
 
+        Log.d(TAG,"debug1 outside1");
+        Log.d(TAG,"debug1 ->"+newChat.toString());
+
         // make a new chat document in chats
-        chats.add(newChat)
-            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        db.collection(getResources().getString(R.string.dbChats))
+                .add(newChat)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG,"debug1 inside1");
+                        // update the database of the two users
+                        String newChatID = documentReference.getId();
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+
+                        Map<String, Object> newCurrentUserData = new HashMap<>();
+                        newCurrentUserData.put(otherUserToBeShown.getUserID(), newChatID);
+
+                        currentUserRef.set(newCurrentUserData, SetOptions.merge());
+
+                        Map<String, Object> newOtherUserData = new HashMap<>();
+                        newOtherUserData.put(currentUserRef.getId(), newChatID);
+
+                        otherUserRef.set(newOtherUserData, SetOptions.merge());
+                        goToChat();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG,"debug1 failed");
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+        /*chats.add(newChat).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
+                    Log.d(TAG,"debug1 inside1");
                     // update the database of the two users
                     String newChatID = documentReference.getId();
                     Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
@@ -326,9 +364,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG,"debug1 failed");
                     Log.w(TAG, "Error adding document", e);
                 }
-            });
+            });*/
     }
 
     /**
@@ -623,7 +662,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Toast.makeText(getApplicationContext(), "getDevicelocationMLocationGrantedTaskSuccess", Toast.LENGTH_LONG).show();
                             Toast.makeText(getApplicationContext(), "" + task.getResult().getLatitude() + " " + task.getResult().getLongitude(), Toast.LENGTH_LONG).show();
                             // Set the map's camera position to the current location of the device.
-                            //mLastKnownLocation = task.getResult(); delete this
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(task.getResult().getLatitude(),
                                             task.getResult().getLongitude()), 15));
@@ -636,27 +674,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Styling the google map
-     *
-     * @param googleMap
-     */
-    private void setGoogleMapStyles(GoogleMap googleMap) {
-        try {
-            // Customise the styling of the base map using a JSON object defined in /res/raw folder
-            // Map design is from https://mapstyle.withgoogle.com/
-            boolean success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
-
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can't find style. Error: ", e);
         }
     }
 
@@ -759,5 +776,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    /**
+     * Styling the google map
+     *
+     * @param googleMap
+     */
+    private void setGoogleMapStyles(GoogleMap googleMap) {
+        try {
+            // Customise the styling of the base map using a JSON object defined in /res/raw folder
+            // Map design is from https://mapstyle.withgoogle.com/
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
     }
 }

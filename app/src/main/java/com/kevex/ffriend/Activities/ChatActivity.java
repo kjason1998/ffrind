@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,18 +23,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ServerTimestamp;
 import com.kevex.ffriend.Adapter.MessageAdapter;
 import com.kevex.ffriend.Model.User;
 import com.kevex.ffriend.R;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private final String TAG = "ChatActivity";
+    @ServerTimestamp Date time;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore database;
@@ -43,6 +52,8 @@ public class ChatActivity extends AppCompatActivity {
     private MessageAdapter chatAdapter;
     private String chatId = "";
     private List<Map> messageList = new ArrayList<>();
+
+    private EditText messageInput;
 
     private Toolbar chatToolBar;
     private User otherUser;
@@ -63,12 +74,8 @@ public class ChatActivity extends AppCompatActivity {
         setupToolBar();
 
         setupChatsRecyclerView();
-    }
 
-    private void setupChatsRecyclerView() {
-        addListenerOnDabaseRefrence();
-        chatsView = findViewById(R.id.chatRecyclerView);
-        setRecyclerView();
+
     }
 
     private void setupToolBar() {
@@ -77,7 +84,47 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(otherUser.getUsername());
     }
 
-    private void addListenerOnDabaseRefrence() {
+
+    /**
+     * will setup the recycle view, by connecting the to the firestore
+     * after connecting to firestore, enable to send new message
+     */
+    private void setupChatsRecyclerView() {
+        addListenerOnDatabaseReference();
+        chatsView = findViewById(R.id.chatRecyclerView);
+        setRecyclerView();
+    }
+
+    private void enableSendMessage() {
+        messageInput = findViewById(R.id.chatInputMessage);
+        messageInput.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    String newStringMessage = messageInput.getText().toString();
+                    putNewMessageInFirestore(newStringMessage);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void putNewMessageInFirestore(String message) {
+        if(!chatId.isEmpty() && chatReference != null){
+
+            // Atomically add a new region to the "regions" array field.
+            Map<String,Object> newMessage = new HashMap();
+            newMessage.put(getResources().getString(R.string.dbMessage),message);
+            newMessage.put(getResources().getString(R.string.dbSenderUid),mAuth.getCurrentUser().getUid());
+            newMessage.put(getResources().getString(R.string.dbSentMessage),new Date());
+            chatReference.update(getResources().getString(R.string.dbMessages), FieldValue.arrayUnion(newMessage));
+        }
+    }
+
+    private void addListenerOnDatabaseReference() {
         // get the chat id
         currentUserRefrence.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -128,5 +175,6 @@ public class ChatActivity extends AppCompatActivity {
         chatAdapter = new MessageAdapter(messageList);
         chatsView.setAdapter(chatAdapter);
         chatsView.setItemAnimator(new DefaultItemAnimator());
+        enableSendMessage();
     }
 }
