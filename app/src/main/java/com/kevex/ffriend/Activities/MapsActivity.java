@@ -481,11 +481,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        Map<String, Object> data = new HashMap<>();
-        data.put("lat", location.getLatitude());
-        data.put("lon", location.getLongitude());
 
-        currentUserRef.set(data, SetOptions.merge());
+        currentUserRef.update("lat", location.getLatitude());
+        currentUserRef.update("lon", location.getLongitude());
+
         //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         fetchOtherUsers();
@@ -727,7 +726,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onOptionsItemSelected(item);
 
         if (item.getItemId() == R.id.main_logout_button) {
+            Log.d(TAG, "onOptionsItemSelected: " + currentUser.toString());
             userAuthenticate.signOut();
+            Log.d(TAG, "onOptionsItemSelected: " + currentUser.toString());
             LogOutUser();
         }
         if (item.getItemId() == R.id.main_profile_edit_button) {
