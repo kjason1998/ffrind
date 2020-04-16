@@ -56,10 +56,14 @@
             android:gravity="end">
 
             <ImageButton
+                android:id="@+id/ib_scan"
+                android:onClick="startScan"
                 android:src="@drawable/scan_qr_white"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>
             <ImageButton
+                android:id="@+id/ib_qr"
+                android:onClick="generateQR"
                 android:src="@drawable/qr_button_white"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>

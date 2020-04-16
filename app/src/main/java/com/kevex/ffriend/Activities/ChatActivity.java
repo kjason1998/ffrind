@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,10 +63,12 @@ public class ChatActivity extends AppCompatActivity {
     private Toolbar chatToolBar;
     private User otherUser;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
 
         Intent intent = getIntent();
         otherUser = (User)intent.getSerializableExtra(getResources().getString(R.string.intetntOhterUser));
@@ -189,5 +192,13 @@ public class ChatActivity extends AppCompatActivity {
         chatsView.setAdapter(chatAdapter);
         chatsView.setItemAnimator(new DefaultItemAnimator());
         enableSendMessage();
+    }
+
+    public void startScan(View view) {
+        startActivity(new Intent(this, ScanActivity.class));
+    }
+
+    public void generateQR(View view) {
+
     }
 }
