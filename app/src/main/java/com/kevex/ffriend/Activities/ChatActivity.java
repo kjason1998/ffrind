@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,6 +55,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private EditText messageInput;
 
+    private TextView titleNameToolBar;
+    private TextView titleAgeToolBar;
+    private TextView titleGenderToolBar;
+
     private Toolbar chatToolBar;
     private User otherUser;
 
@@ -79,8 +84,17 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setupToolBar() {
         chatToolBar = findViewById(R.id.chat_toolbar);
+
+        titleNameToolBar = findViewById(R.id.chatTooldBarTitleName);
+        titleAgeToolBar = findViewById(R.id.chatTooldBarTitleAge);
+        titleGenderToolBar = findViewById(R.id.chatTooldBarTitleGender);
+
         setSupportActionBar(chatToolBar);
-        getSupportActionBar().setTitle(otherUser.getUsername());
+        //getSupportActionBar().setTitle(otherUser.getUsername());
+        titleNameToolBar.setText(otherUser.getUsername());
+        titleAgeToolBar.setText(otherUser.getAge());
+        titleGenderToolBar.setText(otherUser.getGender());
+
     }
 
 

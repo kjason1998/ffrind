@@ -33,6 +33,7 @@
     <string name="dbParticipants">participants</string>
     <string name="dbParticipant">participants</string>
     <string name="dbSenderUid">senderuid</string>
+    <string name="dbSentMessage">sentmessage</string>
 
     <!-- intent -->
     <string name="intetntOhterUser">OTHER_USER</string>
@@ -75,5 +76,4 @@
     <!-- profile activity -->
     <string name="startChatException">User that cannot be found!</string>
     <string name="chat_message_chat_view_message">cannot display message</string>
-    <string name="dbSentMessage">sentmessage</string>
 </resources>

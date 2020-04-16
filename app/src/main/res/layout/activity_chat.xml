@@ -13,8 +13,9 @@
         android:orientation="vertical">
 
         <include
-            layout="@layout/app_bar_layout"
+            layout="@layout/chat_app_bar_layout"
             android:id="@+id/chat_toolbar">
+
         </include>
 
         <androidx.recyclerview.widget.RecyclerView

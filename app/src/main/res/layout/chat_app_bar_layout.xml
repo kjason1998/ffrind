@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:id="@+id/main_app_bar"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/chatTooldBarTitleName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:text="@string/profileDefaultUsername"
+                android:textColor="@color/white"
+                android:textSize="9pt"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/chatTooldBarTitleAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/profileDefaultAge"/>
+                <TextView
+                    android:id="@+id/chatTooldBarTitleGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/profileGenderMale"
+                    android:layout_marginStart="2dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:gravity="end">
+
+            <ImageButton
+                android:src="@drawable/scan_qr_white"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <ImageButton
+                android:src="@drawable/qr_button_white"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.appcompat.widget.Toolbar>
