@@ -15,22 +15,45 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.Result;
+import com.kevex.ffriend.R;
+
+import java.util.ArrayList;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.PACKAGE_USAGE_STATS;
 
 public class ScanActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private static final String TAG = "ScanActivity";
     public static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
+    private FirebaseAuth userAuth;
+    private DocumentReference currentUserRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         scannerView = new ZXingScannerView(this);
-        if (scannerView==null)
+        db = FirebaseFirestore.getInstance();
+        userAuth = FirebaseAuth.getInstance();
+        currentUser = userAuth.getCurrentUser();
+        currentUserRef = db.collection(getResources().getString(R.string.dbUsers)).
+                document(currentUser.getUid());
+
+        if (scannerView == null)
             Log.d(TAG, "onCreate: scannerView==null");
         setContentView(scannerView);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
@@ -43,6 +66,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         }
 
     }
+
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
@@ -115,6 +139,25 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     public void handleResult(Result result) {
         final String resultText = result.getText();
+        currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    double currentPoints = task.getResult().getDouble(getResources().getString(R.string.dbPoints));
+                    ArrayList<String> usersMet = (ArrayList<String>) task.getResult().
+                            get(getResources().getString(R.string.dbUsersMet)); 
+                    if(!usersMet.contains(resultText) && !currentUser.getUid().equals(resultText)){
+                        addPointsToCurrentUser(currentPoints);
+                        addPointsToOtherUser(currentPoints, resultText);
+                        addCurrentUserToOtherUserMetList(resultText);
+                        addOtherUserToCurrentUserMetList(resultText);
+                    } else {
+                        Log.d(TAG, "onComplete: ++ users already met and got points");
+                    }
+                }
+            }
+        });
+        Log.d(TAG, "handleResult: " + resultText);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("scan result");
         builder.setMessage(resultText);
@@ -133,5 +176,71 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    /**
+     * @author Daniel
+     * Method to update the points of the current user.
+     * @param currentPoints - the points that the current user has before updating - retrieved
+     *                      from firebase
+     */
+    public void addPointsToCurrentUser(double currentPoints) {
+        double updatedPoints = currentPoints + 10;
+        currentUserRef.update(getResources().getString(R.string.dbPoints), updatedPoints).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "onComplete: current user points updated");
+            }
+        });
+    }
+
+    /**
+     * @author Daniel
+     * Method to update the points of the other user.
+     * @param currentPoints - the points that the other user has before updating - retrieved
+     *                      from firebase
+     */
+    public void addPointsToOtherUser(double currentPoints, String otherUserUID) {
+        double updatedPoints = currentPoints + 10;
+        db.collection(getResources().getString(R.string.dbUsers)).document(otherUserUID).
+                update(getResources().getString(R.string.dbPoints), updatedPoints).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete: other user points updated");
+                    }
+                });
+    }
+
+
+    /**
+     * @author Daniel
+     * This method add the other users' uid to the list of users that the current user has met.
+     * @param otherUserUID - the firebase UID of the other user.
+     */
+    public void addOtherUserToCurrentUserMetList(String otherUserUID){
+        currentUserRef.update(getResources().getString(R.string.dbUsersMet), FieldValue.arrayUnion(otherUserUID))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete: other user added to current user met list");
+                    }
+                });
+    }
+
+    /**
+     * @author Daniel
+     * This method add the current users' uid to the list of users that the other user has met.
+     * @param otherUserUID - the firebase UID of the other user.
+     */
+    public void addCurrentUserToOtherUserMetList(String otherUserUID){
+        db.collection(getResources().getString(R.string.dbUsers)).document(otherUserUID).
+                update(getResources().getString(R.string.dbUsersMet), FieldValue.arrayUnion(currentUser.getUid()))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete: current user added to other user met list");
+                    }
+                });
     }
 }
