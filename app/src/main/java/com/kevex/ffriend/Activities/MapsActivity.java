@@ -77,6 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = "MapsActivity";
+    private final int CARD_VIEW_PEEK_HEIGHT = 120;
 
     @ServerTimestamp
     Date time;
@@ -190,7 +191,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         // set the peek height
-        bottomSheetBehavior.setPeekHeight(120);
+        bottomSheetBehavior.setPeekHeight(CARD_VIEW_PEEK_HEIGHT);
 
         // set hide able or not
         bottomSheetBehavior.setHideable(false);
@@ -765,6 +766,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
+
+            googleMap.setPadding(0,0,0,CARD_VIEW_PEEK_HEIGHT);
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");

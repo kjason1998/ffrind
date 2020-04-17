@@ -15,5 +15,6 @@
     <dimen name="profileCardViewPadding">12.5dp</dimen>
     <dimen name="profileCardViewMargin">15dp</dimen>
     <dimen name="profileCardVewHeight">370dp</dimen>
+    <dimen name="profileCardPeekHeight">120</dimen>
 
 </resources>
