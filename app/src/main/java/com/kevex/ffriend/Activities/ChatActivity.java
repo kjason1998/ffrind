@@ -217,7 +217,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void generateQR(View view) {
-        String userID = otherUser.getUserID();
+        String userID = currentUser.getUid();
         QRCodeWriter writer = new QRCodeWriter();
         ivQr = (ImageView) findViewById(R.id.iv_qr);
         LayoutInflater inflater = getLayoutInflater();
