@@ -23,6 +23,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kevex.ffriend.R;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -172,6 +173,8 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(getResources().getString(R.string.dbBio), getResources().getString(R.string.profileDefaultDescription));
         user.put(getResources().getString(R.string.dbAge), getResources().getString(R.string.profileDefaultAge));
         user.put(getResources().getString(R.string.dbGender), getResources().getString(R.string.profileGenderMale));
+        user.put(getResources().getString(R.string.dbPoints), 0);
+        user.put(getResources().getString(R.string.dbUsersMet), Arrays.asList(""));
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 

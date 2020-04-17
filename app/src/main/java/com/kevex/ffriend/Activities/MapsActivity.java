@@ -3,6 +3,7 @@ package com.kevex.ffriend.Activities;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -505,6 +506,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationRequest.setInterval(60000);
         locationRequest.setFastestInterval(60000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+
         // check if permission for location Fine and Coarse
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -730,6 +732,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             userAuthenticate.signOut();
             Log.d(TAG, "onOptionsItemSelected: " + currentUser.toString());
             LogOutUser();
+
         }
         if (item.getItemId() == R.id.main_profile_edit_button) {
             changeToProfileSetupScreen();
