@@ -135,6 +135,7 @@ public class ChatActivity extends AppCompatActivity {
                     // Perform action on key press
                     String newStringMessage = messageInput.getText().toString();
                     putNewMessageInFirestore(newStringMessage);
+                    messageInput.setText("");
                     return true;
                 }
                 return false;
@@ -179,6 +180,7 @@ public class ChatActivity extends AppCompatActivity {
                                     ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
                                     messageList.addAll(newArray);
                                     chatAdapter.notifyDataSetChanged();
+                                    chatsView.smoothScrollToPosition(messageList.size()-1);
                                 } else {
                                     Log.d(TAG, "Current data: null");
                                 }
@@ -205,6 +207,8 @@ public class ChatActivity extends AppCompatActivity {
         chatAdapter = new MessageAdapter(messageList);
         chatsView.setAdapter(chatAdapter);
         chatsView.setItemAnimator(new DefaultItemAnimator());
+
+
         enableSendMessage();
     }
 

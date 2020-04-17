@@ -109,6 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationRequest locationRequest;
     private Location lastLocation = new Location("");
     private Circle circle;
+    private boolean isUserActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -502,21 +503,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(60000);
-        locationRequest.setFastestInterval(60000);
-        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
 
-        // check if permission for location Fine and Coarse
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationRequest = new LocationRequest();
+            locationRequest.setInterval(60000);
+            locationRequest.setFastestInterval(60000);
+            locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
 
-            Toast.makeText(this, "Not Enough Permission", Toast.LENGTH_SHORT).show();
-            getLocationPermission();
-            return;
-        }else{ // if location permission for location Fine and Coarse is enabled go to this branch
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        }
+
+            // check if permission for location Fine and Coarse
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                Toast.makeText(this, "Not Enough Permission", Toast.LENGTH_SHORT).show();
+                getLocationPermission();
+                return;
+            } else { // if location permission for location Fine and Coarse is enabled go to this branch
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+            }
 
     }
 
@@ -728,9 +731,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onOptionsItemSelected(item);
 
         if (item.getItemId() == R.id.main_logout_button) {
-            Log.d(TAG, "onOptionsItemSelected: " + currentUser.toString());
+
             userAuthenticate.signOut();
-            Log.d(TAG, "onOptionsItemSelected: " + currentUser.toString());
+
             LogOutUser();
 
         }
