@@ -53,6 +53,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         currentUserRef = db.collection(getResources().getString(R.string.dbUsers)).
                 document(currentUser.getUid());
 
+
         if (scannerView == null)
             Log.d(TAG, "onCreate: scannerView==null");
         setContentView(scannerView);
@@ -136,20 +137,21 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
     }
 
-    @Override
-    public void handleResult(Result result) {
-        final String resultText = result.getText();
+    /**
+     * @author daniel
+     * This method retrieves the current users' current points from the firestore database.
+     * @param resultText - the UID of the other user to be used for validation.
+     */
+    public void getCurrentUsersCurrentPoints(final String resultText){
         currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     double currentPoints = task.getResult().getDouble(getResources().getString(R.string.dbPoints));
                     ArrayList<String> usersMet = (ArrayList<String>) task.getResult().
-                            get(getResources().getString(R.string.dbUsersMet)); 
+                            get(getResources().getString(R.string.dbUsersMet));
                     if(!usersMet.contains(resultText) && !currentUser.getUid().equals(resultText)){
                         addPointsToCurrentUser(currentPoints);
-                        addPointsToOtherUser(currentPoints, resultText);
-                        addCurrentUserToOtherUserMetList(resultText);
                         addOtherUserToCurrentUserMetList(resultText);
                     } else {
                         Log.d(TAG, "onComplete: ++ users already met and got points");
@@ -157,6 +159,45 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 }
             }
         });
+
+    }
+
+    /**
+     * @author daniel
+     * Method to get the other users' current points from firestore database.
+     * @param resultText - the UID of the other user, retrieved from scanning the QR code.
+     * @param otherUserRef - a document reference for the other users entry in firestore.
+     */
+    public void getOtherUsersCurrentPoints(final String resultText, DocumentReference otherUserRef){
+       otherUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    double otherUserCurrentPoints = task.getResult().getDouble(getResources().getString(R.string.dbPoints));
+                    ArrayList<String> usersMet = (ArrayList<String>) task.getResult().
+                            get(getResources().getString(R.string.dbUsersMet));
+
+                    if(!usersMet.contains(currentUser.getUid())){
+                        addPointsToOtherUser(otherUserCurrentPoints, resultText);
+                        addCurrentUserToOtherUserMetList(resultText);
+                    } else {
+                        Log.d(TAG, "onComplete: ++ users already met and got points");
+                    }
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void handleResult(Result result) {
+
+        final String resultText = result.getText();
+        final DocumentReference otherUserRef = db.collection(getResources().getString(R.string.dbUsers)).
+                document(resultText);
+        getCurrentUsersCurrentPoints(resultText);
+        getOtherUsersCurrentPoints(resultText, otherUserRef);
+
         Log.d(TAG, "handleResult: " + resultText);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("scan result");

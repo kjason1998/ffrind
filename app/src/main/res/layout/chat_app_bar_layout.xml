@@ -57,19 +57,22 @@
 
             <ImageButton
                 android:id="@+id/ib_scan"
-                android:onClick="startScan"
-                android:src="@drawable/scan_qr_white"
-                android:background="@android:color/transparent"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
-            <ImageButton
-                android:id="@+id/ib_qr"
-                android:onClick="generateQR"
-                android:background="@android:color/transparent"
-                android:src="@drawable/qr_button_white"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"/>
+
+                android:background="@drawable/default_message_text_background"
+                android:onClick="startScan"
+                android:src="@drawable/scan_qr_white" />
+
+            <ImageButton
+                android:id="@+id/ib_qr"
+                android:layout_width="wrap_content"
+
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/default_message_text_background"
+                android:onClick="generateQR"
+                android:src="@drawable/qr_button_white" />
         </LinearLayout>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
