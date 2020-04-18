@@ -48,6 +48,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageHolder> {
             holder.receivingLayout.setVisibility(View.GONE);
             holder.messageTextViewSending.setText(messageText);
         }else {
+            holder.receivingLayout.setVisibility(View.VISIBLE);
+            holder.sendingLayout.setVisibility(View.GONE);
             holder.messageTextViewReceiving.setText(messageText);
         }
     }
