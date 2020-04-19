@@ -1,25 +1,22 @@
 package com.kevex.ffriend.Activities;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -32,7 +29,6 @@ import java.util.ArrayList;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.PACKAGE_USAGE_STATS;
 
 public class ScanActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private static final String TAG = "ScanActivity";
@@ -206,13 +202,14 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 scannerView.resumeCameraPreview(ScanActivity.this);
+                Toast.makeText(ScanActivity.this, "the points is added", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
-        builder.setNegativeButton("visit", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(resultText)));
-
+                finish();
             }
         });
         AlertDialog dialog = builder.create();
