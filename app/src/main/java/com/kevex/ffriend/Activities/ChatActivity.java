@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -16,9 +17,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,15 +69,15 @@ public class ChatActivity extends AppCompatActivity {
     private List<Map> messageList = new ArrayList<>();
 
     private EditText messageInput;
+    private LinearLayout maxMessagesIconLinearLayout;
+    private LinearLayout inputMessageLinearLayout;
 
+    private Toolbar chatToolBar;
     private TextView titleNameToolBar;
     private TextView titleAgeToolBar;
     private TextView titleGenderToolBar;
 
-    private Toolbar chatToolBar;
     private User otherUser;
-    private ImageView ivQr;
-    private View layout;
 
 
     @Override
@@ -82,7 +85,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        ivQr = (ImageView) findViewById(R.id.iv_qr);
 
         Intent intent = getIntent();
         otherUser = (User) intent.getSerializableExtra(getResources().getString(R.string.intetntOhterUser));
@@ -92,11 +94,14 @@ public class ChatActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         currentUserRefrence = database.collection(getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
+
+        messageInput = findViewById(R.id.chatInputMessage);
+        inputMessageLinearLayout = findViewById(R.id.inputMessageLinearLayout);
+        maxMessagesIconLinearLayout = findViewById(R.id.maxMessagesIconLinearLayout);
+
         setupToolBar();
 
         setupChatsRecyclerView();
-
-
     }
 
     private void setupToolBar() {
@@ -126,7 +131,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void enableSendMessage() {
-        messageInput = findViewById(R.id.chatInputMessage);
         messageInput.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -180,7 +184,8 @@ public class ChatActivity extends AppCompatActivity {
                                     ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
                                     messageList.addAll(newArray);
                                     chatAdapter.notifyDataSetChanged();
-                                    chatsView.smoothScrollToPosition(messageList.size()-1);
+                                    animationToGoDown();
+                                    checkMaxMessagesReach();
                                 } else {
                                     Log.d(TAG, "Current data: null");
                                 }
@@ -194,6 +199,27 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void animationToGoDown() {
+        if(messageList.size()>1){
+            chatsView.smoothScrollToPosition(messageList.size()-1);
+        }
+    }
+
+    private void checkMaxMessagesReach() {
+        if(messageList.size()>4){
+            maxMessagesIconLinearLayout.setVisibility(View.VISIBLE);
+            inputMessageLinearLayout.setVisibility(View.GONE);
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }else{
+            maxMessagesIconLinearLayout.setVisibility(View.GONE);
+            inputMessageLinearLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -219,10 +245,9 @@ public class ChatActivity extends AppCompatActivity {
     public void generateQR(View view) {
         String userID = currentUser.getUid();
         QRCodeWriter writer = new QRCodeWriter();
-        ivQr = (ImageView) findViewById(R.id.iv_qr);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.view_dialog_qr, null);
-        ImageView qrCodeImage = layout.findViewById(R.id.iv_qr);
+        ImageView qrCodeImage = layout.findViewById(R.id.qrCode);
         Bitmap bitmap = null;
         try {
             BitMatrix matrix = writer.encode(userID.trim(), BarcodeFormat.QR_CODE, 300, 300);

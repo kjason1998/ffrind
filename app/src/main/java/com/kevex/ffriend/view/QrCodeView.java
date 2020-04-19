@@ -19,7 +19,6 @@ import com.kevex.ffriend.R;
 
 public class QrCodeView extends Dialog implements View.OnClickListener {
 
-    private View customView;
     private Bitmap bitmap;
 
     public QrCodeView(ChatActivity context, Bitmap bitmap) {
@@ -41,17 +40,17 @@ public class QrCodeView extends Dialog implements View.OnClickListener {
         View view = inflater.inflate(R.layout.view_dialog_qr, null);
         setContentView(view);
 
-        ImageView qrCode = (ImageView) view.findViewById(R.id.iv_qr);
+        ImageView qrCode = view.findViewById(R.id.qrCode);
         qrCode.setImageBitmap(bitmap);
-//        qrCode = qrCodeImage;
         Window window = getWindow();
+
         //Set up pop-up animation
         window.setWindowAnimations(R.style.style_dialog);
         WindowManager.LayoutParams wl = window.getAttributes();
+
         //Set popup position
         wl.gravity = Gravity.CENTER;
         window.setAttributes(wl);
-
     }
 
 
