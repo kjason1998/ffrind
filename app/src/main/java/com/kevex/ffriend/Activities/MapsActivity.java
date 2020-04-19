@@ -519,6 +519,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getLocationPermission();
                 return;
             } else { // if location permission for location Fine and Coarse is enabled go to this branch
+                // add the listener here
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
 
@@ -542,7 +543,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if (location != null) {
                                 wayLatitude = location.getLatitude();
                                 wayLongitude = location.getLongitude();
-                                Toast.makeText(MapsActivity.this.getApplicationContext(), "onRequestPermissionsResult" + String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -608,9 +608,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onSuccess(Location location) {
                     if (location != null) {
                         wayLatitude = location.getLatitude();
-                        wayLongitude = location.getLongitude();
-                        Toast.makeText(MapsActivity.this.getApplicationContext(), "getLocationpermission" + String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude), Toast.LENGTH_SHORT).show();
-                        getDeviceLocation();
+                        wayLongitude = location.getLongitude();getDeviceLocation();
                     }
                 }
             });
@@ -631,10 +629,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "getDevicelocationMLocationGrantedTaskSuccess", Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(), "" + task.getResult().getLatitude() + " " + task.getResult().getLongitude(), Toast.LENGTH_LONG).show();
-                            // Set the map's camera position to the current location of the device.
+                        if (task.isSuccessful()) {// Set the map's camera position to the current location of the device.
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(task.getResult().getLatitude(),
                                             task.getResult().getLongitude()), 15));
@@ -734,6 +729,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (item.getItemId() == R.id.main_logout_button) {
 
             userAuthenticate.signOut();
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
 
             LogOutUser();
 
