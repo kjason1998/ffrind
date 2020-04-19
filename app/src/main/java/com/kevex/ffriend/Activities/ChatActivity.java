@@ -241,4 +241,8 @@ public class ChatActivity extends AppCompatActivity {
         new QrCodeView(this, bitmap).show();
 
     }
+
+    public void goBack(View view) {
+        finish();
+    }
 }

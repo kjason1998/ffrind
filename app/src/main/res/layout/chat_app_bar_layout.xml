@@ -15,6 +15,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
+            <ImageButton
+                android:id="@+id/chatToolBarBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:onClick="goBack"
+                android:src="@drawable/back" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -56,7 +63,7 @@
             android:gravity="end">
 
             <ImageButton
-                android:id="@+id/ib_scan"
+                android:id="@+id/chatToolBarScanButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
@@ -64,7 +71,7 @@
                 android:src="@drawable/scan_qr_white" />
 
             <ImageButton
-                android:id="@+id/ib_qr"
+                android:id="@+id/chatToolBarQRButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="10dp"
