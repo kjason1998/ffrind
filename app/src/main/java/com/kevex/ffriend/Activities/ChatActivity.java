@@ -180,12 +180,24 @@ public class ChatActivity extends AppCompatActivity {
                                 }
 
                                 if (snapshot != null && snapshot.exists()) {
-                                    messageList.clear();
-                                    ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
-                                    messageList.addAll(newArray);
-                                    chatAdapter.notifyDataSetChanged();
-                                    animationToGoDown();
-                                    checkMaxMessagesReach();
+                                    ArrayList<String> usersMetArray =
+                                            (ArrayList<String>) snapshot.get(getResources().getString(R.string.dbUsersMet));
+                                    // check if user met array is null and not empty
+                                    // also check if current user and other user are already met
+                                    if( usersMetArray != null && usersMetArray.size()>0){
+                                        if(usersMetArray.contains(otherUser.getUserID())){
+                                            hideInputMessage();
+                                        }else{
+                                            messageList.clear();
+                                            ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
+                                            messageList.addAll(newArray);
+                                            chatAdapter.notifyDataSetChanged();
+                                            animationToGoDown();
+                                            checkMaxMessagesReach();
+                                        }
+                                    }else{
+                                        Log.e(TAG,"usersMetArray is null or empty please check Firestore");
+                                    }
                                 } else {
                                     Log.d(TAG, "Current data: null");
                                 }
@@ -209,16 +221,20 @@ public class ChatActivity extends AppCompatActivity {
 
     private void checkMaxMessagesReach() {
         if(messageList.size()>4){
-            maxMessagesIconLinearLayout.setVisibility(View.VISIBLE);
-            inputMessageLinearLayout.setVisibility(View.GONE);
-            View view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+            hideInputMessage();
         }else{
             maxMessagesIconLinearLayout.setVisibility(View.GONE);
             inputMessageLinearLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideInputMessage() {
+        maxMessagesIconLinearLayout.setVisibility(View.VISIBLE);
+        inputMessageLinearLayout.setVisibility(View.GONE);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

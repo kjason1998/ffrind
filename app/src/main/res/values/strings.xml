@@ -14,7 +14,7 @@
     <string name="englishHintBio">About me</string>
     <string name="englishHintGender">Male/Female</string>
 
-    <!-- database key -->
+    <!-- database key make sure dont have space in between and make sure same with Firestore field-->
     <!-- users -->
     <string name="dbUsers">users</string>
     <string name="dbUserame">username</string>
@@ -34,6 +34,8 @@
     <string name="dbParticipant">participants</string>
     <string name="dbSenderUid">senderuid</string>
     <string name="dbSentMessage">sentmessage</string>
+    <string name="dbPoints">points</string>
+    <string name="dbUsersMet">users met</string>
 
     <!-- intent -->
     <string name="intetntOhterUser">OTHER_USER</string>
@@ -46,6 +48,10 @@
     <string name="loginMessageLoginSuccess">Welcome back!</string>
     <string name="loginMessageLoginFailed">Please try again</string>
     <string name="noEmailStringWarning">please input email</string>
+    <string name="noPasswordStringWarning">please input password</string>
+    <!-- progress dialog -->
+    <string name="progressDiablogLoginTitle">Trying to login</string>
+    <string name="progressDiablogLoginMessage">Please wait, wont be long</string>
 
     <!-- register-->
     <!-- register xml -->
@@ -77,7 +83,4 @@
     <!-- profile activity -->
     <string name="startChatException">User that cannot be found!</string>
     <string name="chat_message_chat_view_message">cannot display message</string>
-    <string name="dbPoints">points</string>
-    <string name="dbUsersMet">users met</string>
-    <string name="noPasswordStringWarning">please input password</string>
 </resources>

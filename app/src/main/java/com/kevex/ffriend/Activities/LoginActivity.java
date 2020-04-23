@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -38,8 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.passwordInput);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("login");
-        progressDialog.setMessage("Please wait...");
+        progressDialog.setTitle(getResources().getString(R.string.progressDiablogLoginTitle));
+        progressDialog.setMessage(getResources().getString(R.string.progressDiablogLoginMessage));
         progressDialog.setCancelable(false);
 
     }
@@ -59,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
      * android:onClick for sign up button
      * go to register screen
      *
-     * @param view
      */
     public void changeToRegister(View view) {
         Intent registerIntent = new Intent(this, RegisterActivity.class);
@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
      * try to log user in, if success this will call
      * changeToHomeScreen - to direct user to home screen
      *
-     * @param view
      */
     public void login(View view) {
         userAuthenticate.signOut();
@@ -96,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordInput.setError(getResources().getString(R.string.noPasswordStringWarning));
         } else {
             progressDialog.show();
-            userAuthenticate.signInWithEmailAndPassword(email, password)
+            final Task<AuthResult> authResultTask = userAuthenticate.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -104,7 +103,11 @@ public class LoginActivity extends AppCompatActivity {
                                 task.getResult();
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(LoginActivity.this, e.getMessage().split(": ")[1], Toast.LENGTH_SHORT).show();
+                                if(e.getMessage() != null){
+                                    Toast.makeText(LoginActivity.this, e.getMessage().split(": ")[1], Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Log.e(TAG,"exception e in signInWithEmailAndPassword method does not have a message");
+                                }
                             }
                             if (task.isSuccessful()) {
                                 changeToHomeScreen();
