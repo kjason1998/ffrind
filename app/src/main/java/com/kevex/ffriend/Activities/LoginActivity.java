@@ -93,12 +93,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (TextUtils.isEmpty(email)) {
-            emailInput.setError("please input email");
-
+            emailInput.setError(getResources().getString(R.string.noEmailStringWarning));
         } else if (TextUtils.isEmpty(password)) {
-            passwordInput.setError("please input password");
+            passwordInput.setError(getResources().getString(R.string.noPasswordStringWarning));
         } else {
-
             progressDialog.show();
             userAuthenticate.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

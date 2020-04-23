@@ -45,6 +45,7 @@
     <!-- login activity -->
     <string name="loginMessageLoginSuccess">Welcome back!</string>
     <string name="loginMessageLoginFailed">Please try again</string>
+    <string name="noEmailStringWarning">please input email</string>
 
     <!-- register-->
     <!-- register xml -->
@@ -78,4 +79,5 @@
     <string name="chat_message_chat_view_message">cannot display message</string>
     <string name="dbPoints">points</string>
     <string name="dbUsersMet">users met</string>
+    <string name="noPasswordStringWarning">please input password</string>
 </resources>
