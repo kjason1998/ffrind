@@ -22,8 +22,6 @@ import com.kevex.ffriend.R;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private String email;
-    private String password;
     private EditText emailInput;
     private EditText passwordInput;
     private FirebaseAuth userAuthenticate;
@@ -88,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void login(View view) {
         userAuthenticate.signOut();
-        email = emailInput.getText().toString();
-        password = passwordInput.getText().toString();
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
 
 
         if (TextUtils.isEmpty(email)) {
