@@ -3,7 +3,6 @@ package com.kevex.ffriend.Activities;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -50,7 +49,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -59,7 +57,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.ServerTimestamp;
 import com.google.firebase.firestore.SetOptions;
-import com.kevex.ffriend.Model.Chat;
 import com.kevex.ffriend.Model.User;
 import com.kevex.ffriend.R;
 
@@ -67,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -753,7 +749,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Styling the google map
      *
-     * @param googleMap
+     * @param googleMap - the map that is use
      */
     private void setGoogleMapStyles(GoogleMap googleMap) {
         try {

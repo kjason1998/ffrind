@@ -33,6 +33,8 @@ import static android.Manifest.permission.CAMERA;
 public class ScanActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private static final String TAG = "ScanActivity";
     public static final int REQUEST_CAMERA = 1;
+    private static final int MEET_POINT = 10;
+
     private ZXingScannerView scannerView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -51,12 +53,11 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
 
         if (scannerView == null)
-            Log.d(TAG, "onCreate: scannerView==null");
+            Log.d(TAG, "onCreate: scannerView is null");
         setContentView(scannerView);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
             if (checkPermission()) {
                 Toast.makeText(this, "permission is granted!", Toast.LENGTH_SHORT).show();
-
             } else {
                 requestPermissions();
             }
@@ -80,7 +81,6 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     boolean cameraAccept = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (cameraAccept) {
                         Toast.makeText(this, "permission is granted", Toast.LENGTH_SHORT).show();
-
                     } else {
                         Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -223,7 +223,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
      *                      from firebase
      */
     public void addPointsToCurrentUser(double currentPoints) {
-        double updatedPoints = currentPoints + 10;
+        double updatedPoints = currentPoints + MEET_POINT;
         currentUserRef.update(getResources().getString(R.string.dbPoints), updatedPoints).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -239,7 +239,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
      *                      from firebase
      */
     public void addPointsToOtherUser(double currentPoints, String otherUserUID) {
-        double updatedPoints = currentPoints + 10;
+        double updatedPoints = currentPoints + MEET_POINT;
         db.collection(getResources().getString(R.string.dbUsers)).document(otherUserUID).
                 update(getResources().getString(R.string.dbPoints), updatedPoints).
                 addOnCompleteListener(new OnCompleteListener<Void>() {

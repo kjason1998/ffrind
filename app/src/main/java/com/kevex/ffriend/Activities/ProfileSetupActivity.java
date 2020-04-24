@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,9 +29,6 @@ import java.util.Map;
 public class ProfileSetupActivity extends AppCompatActivity {
     private final static int RADIO_ID_MALE = 1000;
     private final static int RADIO_ID_FEMALE = 2000;
-
-    private Button submitButton;
-    private Button skipButton;
 
     private EditText ageEditText;
     private EditText bioEditText;
@@ -77,9 +73,6 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         radioMaleButton.setId(RADIO_ID_MALE);
         radioFemaleButton.setId(RADIO_ID_FEMALE);
-
-        submitButton = findViewById(R.id.profileSetupSubmitButton);
-        skipButton = findViewById(R.id.profileSetupSkipButton);
     }
 
     /**
