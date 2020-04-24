@@ -223,7 +223,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                     userGenderDisplay.setText(document.getString(getResources().getString(R.string.dbGender)));
                                                     userAgeDisplay.setText(document.getString(getResources().getString(R.string.dbAge)));
                                                     userPointsDisplay.setText(String.valueOf(document.
-                                                            getDouble(getResources().getString(R.string.dbPoints))));
+                                                            getDouble(getResources().getString(R.string.dbPoints)).intValue()));
                                                 } else {
                                                     Log.e(TAG, "No such document");
                                                 }
@@ -241,7 +241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userBioDisplay.setText(otherUserToBeShown.getBio());
                                     userGenderDisplay.setText(otherUserToBeShown.getGender());
                                     userAgeDisplay.setText(otherUserToBeShown.getAge());
-                                    userPointsDisplay.setText(String.valueOf(otherUserToBeShown.getPoints()));
+                                    userPointsDisplay.setText(String.valueOf((int) otherUserToBeShown.getPoints()));
                                 }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
@@ -435,7 +435,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
                                     userToBeAdded.setGender(document.getString(getResources().getString(R.string.dbGender)));
                                     userToBeAdded.setUserID(document.getId());
-                                    userToBeAdded.setPoints(document.getDouble(getResources().getString(R.string.dbPoints)));
+                                    userToBeAdded.setPoints(document.getDouble(getResources().getString(R.string.dbPoints)).intValue());
                                     otherUsers.add(userToBeAdded);
                                 }
                             }
@@ -583,7 +583,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         usernameDisplay.setText(otherUserToBeShown.getUsername());
         userBioDisplay.setText(otherUserToBeShown.getBio());
         usernameDisplay.setText(otherUserToBeShown.getEmail());
-        userPointsDisplay.setText(String.valueOf(otherUserToBeShown.getPoints()));
+        userPointsDisplay.setText(String.valueOf((int) otherUserToBeShown.getPoints()));
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
