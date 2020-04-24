@@ -27,7 +27,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:padding="@dimen/profileCardViewPadding"
-                    android:background="@color/cardViewProfileBg"
+                    android:background="@color/cardViewDefaultBg"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
                         <LinearLayout

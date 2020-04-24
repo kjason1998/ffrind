@@ -106,26 +106,29 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = registerPhoneNumber.getText().toString();
         username = registerUserName.getText().toString();
 
-        if(password.matches(confirmPassword)) {
-            userAuthenticate.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                addUserToDB();
-                            } else {
-                                Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
-                                        Toast.LENGTH_SHORT).show();
+        if(email.isEmpty()||password.isEmpty()||confirmPassword.isEmpty()||phoneNumber.isEmpty()||username.isEmpty()){
+            Toast.makeText(RegisterActivity.this,getResources().getString(R.string.registerWarningInputEmpty),Toast.LENGTH_SHORT).show();
+        }else{
+            if(password.matches(confirmPassword)) {
+                userAuthenticate.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    addUserToDB();
+                                } else {
+                                    Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                progressDialog.dismiss();
                             }
-                            progressDialog.dismiss();
-                        }
-                    });
-        } else {
-            progressDialog.dismiss();
-            Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
-                    Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
-
     }
 
     /**

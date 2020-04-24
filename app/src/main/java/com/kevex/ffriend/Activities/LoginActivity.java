@@ -23,6 +23,9 @@ import com.kevex.ffriend.R;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
+
+    private String email;
+
     private EditText emailInput;
     private EditText passwordInput;
     private FirebaseAuth userAuthenticate;
@@ -85,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void login(View view) {
         userAuthenticate.signOut();
-        String email = emailInput.getText().toString();
+        email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
 
 
@@ -118,6 +121,27 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.LENGTH_LONG).show();
                             }
                             progressDialog.dismiss();
+                        }
+                    });
+        }
+    }
+
+    public void sendResetPassword(View view) {
+        email = emailInput.getText().toString();
+        if(email.isEmpty()){
+            Toast.makeText(LoginActivity.this,getResources().getString(R.string.loginWarningResetPasswordNoEmail),Toast.LENGTH_SHORT).show();
+        }else{
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this,getResources().getString(R.string.loginResePasswordSuccess),Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "Email sent, for resetting password.");
+                            }else{
+                                Toast.makeText(LoginActivity.this,getResources().getString(R.string.loginWarningResetPasswordUnsuccess),Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Email is not sent for resetting password.");
+                            }
                         }
                     });
         }

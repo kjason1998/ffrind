@@ -84,6 +84,11 @@
     <string name="startChatException">User that cannot be found!</string>
     <string name="chat_message_chat_view_message">cannot display message</string>
     <string name="chatMessageExceedLimit">Message is too long, make sure it is less than 250 characters</string>
+    <string name="loginResetPassword">Forgot password</string>
+    <string name="loginWarningResetPasswordNoEmail">Please put the email in order to reset the password</string>
+    <string name="loginResePasswordSuccess">Please check your email, it may take up to 5 minutes</string>
+    <string name="loginWarningResetPasswordUnsuccess">Please check the email or make a new account with this email address</string>
+    <string name="registerWarningInputEmpty">Please fill all the fields</string>
 
     <!-- chat -->
     <!-- chat activity -->
