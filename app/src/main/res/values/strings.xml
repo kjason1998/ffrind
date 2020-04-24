@@ -62,6 +62,10 @@
     <string name="registerMessageRegisterFailed">Please try again</string>
     <string name="registerMessagePasswordUnmatched">Password do not match</string>
 
+    <string name="noPhoneNumberStringWarning">please input phone number</string>
+    <string name="noConfirmPasswordStringWarning">please retype password</string>
+    <string name="noUsernameStringWarning">please input username</string>
+
     <!-- profile setup-->
     <!-- profile setup xml -->
     <string name="profileSetupSetButton">Submit</string>

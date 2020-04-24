@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -106,9 +107,17 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = registerPhoneNumber.getText().toString();
         username = registerUserName.getText().toString();
 
-        if(email.isEmpty()||password.isEmpty()||confirmPassword.isEmpty()||phoneNumber.isEmpty()||username.isEmpty()){
-            Toast.makeText(RegisterActivity.this,getResources().getString(R.string.registerWarningInputEmpty),Toast.LENGTH_SHORT).show();
-        }else{
+        if (TextUtils.isEmpty(email)) {
+            registerEmail.setError(getResources().getString(R.string.noEmailStringWarning));
+        } else if (TextUtils.isEmpty(password)) {
+            registerPassword.setError(getResources().getString(R.string.noPasswordStringWarning));
+        } else if (TextUtils.isEmpty(confirmPassword)) {
+            registerConfirmPassword.setError(getResources().getString(R.string.noConfirmPasswordStringWarning));
+        } else if (TextUtils.isEmpty(phoneNumber)) {
+            registerPhoneNumber.setError(getResources().getString(R.string.noPhoneNumberStringWarning));
+        } else if (TextUtils.isEmpty(username)) {
+            registerUserName.setError(getResources().getString(R.string.noUsernameStringWarning));
+        } else{
             if(password.matches(confirmPassword)) {
                 userAuthenticate.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
