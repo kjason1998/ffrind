@@ -98,6 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView userBioDisplay;
     private TextView userAgeDisplay;
     private TextView userGenderDisplay;
+    private TextView userPointsDisplay;
     private FloatingActionButton fabStartChat;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -179,6 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 userBioDisplay = findViewById(R.id.profileBioInfo);
                 userAgeDisplay = findViewById(R.id.profileAgeInfo);
                 userGenderDisplay = findViewById(R.id.profileGenderInfo);
+                userPointsDisplay = findViewById(R.id.profilePointsInfo);
                 fabStartChat = findViewById(R.id.fabStartChat);
             }
         });
@@ -220,6 +222,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                     userBioDisplay.setText(document.getString(getResources().getString(R.string.dbBio)));
                                                     userGenderDisplay.setText(document.getString(getResources().getString(R.string.dbGender)));
                                                     userAgeDisplay.setText(document.getString(getResources().getString(R.string.dbAge)));
+                                                    userPointsDisplay.setText(String.valueOf(document.
+                                                            getDouble(getResources().getString(R.string.dbPoints))));
                                                 } else {
                                                     Log.e(TAG, "No such document");
                                                 }
@@ -237,6 +241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userBioDisplay.setText(otherUserToBeShown.getBio());
                                     userGenderDisplay.setText(otherUserToBeShown.getGender());
                                     userAgeDisplay.setText(otherUserToBeShown.getAge());
+                                    userPointsDisplay.setText(String.valueOf(otherUserToBeShown.getPoints()));
                                 }
                                 break;
                             case BottomSheetBehavior.STATE_COLLAPSED:
@@ -430,6 +435,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     userToBeAdded.setBio(document.getString(getResources().getString(R.string.dbBio)));
                                     userToBeAdded.setGender(document.getString(getResources().getString(R.string.dbGender)));
                                     userToBeAdded.setUserID(document.getId());
+                                    userToBeAdded.setPoints(document.getDouble(getResources().getString(R.string.dbPoints)));
                                     otherUsers.add(userToBeAdded);
                                 }
                             }
@@ -577,6 +583,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         usernameDisplay.setText(otherUserToBeShown.getUsername());
         userBioDisplay.setText(otherUserToBeShown.getBio());
         usernameDisplay.setText(otherUserToBeShown.getEmail());
+        userPointsDisplay.setText(String.valueOf(otherUserToBeShown.getPoints()));
+
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

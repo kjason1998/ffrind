@@ -14,6 +14,9 @@ public class User implements Serializable {
     String age;
     double lat;
     double lon;
+    double points;
+
+
 
     /**
      * TODO: Make sure to check set methods
@@ -34,6 +37,14 @@ public class User implements Serializable {
         setEmail(email);
         setUsername(username);
         setPhoneNumber(phoneNumber);
+    }
+
+    public double getPoints() {
+        return points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
     }
 
     public String getGender() {
