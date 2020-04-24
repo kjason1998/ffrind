@@ -97,6 +97,7 @@
     <string name="noAgeStringWarning">Please fill your age</string>
     <string name="profileSetupMessageDescriptionWrong">Description must be at least 10 character and maximum 250 characters</string>
     <string name="registerMessagePasswordTooShort">Password need to be at least 8 characters</string>
+    <string name="qrScanSuccessful">Points acquired</string>
 
     <!-- chat -->
     <!-- chat activity -->
