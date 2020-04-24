@@ -113,7 +113,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
                 } else if (selected == RADIO_ID_FEMALE) {
                     updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderFemale));
                 } else {
-                    Toast.makeText(this, getResources().getString(R.string.profileSetupMessageGenderWrong)+ " "+ selected, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.profileSetupMessageGenderWrong), Toast.LENGTH_SHORT).show();
                 }
             }else{
                 Toast.makeText(this, getResources().getString(R.string.profileSetupMessageAgeWrong), Toast.LENGTH_SHORT).show();
