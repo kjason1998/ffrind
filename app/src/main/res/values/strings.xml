@@ -95,6 +95,8 @@
     <string name="registerWarningInputEmpty">Please fill all the fields</string>
     <string name="noBioStringWarning">Please fill about your self</string>
     <string name="noAgeStringWarning">Please fill your age</string>
+    <string name="profileSetupMessageDescriptionWrong">Description must be at least 10 character and maximum 250 characters</string>
+    <string name="registerMessagePasswordTooShort">Password need to be at least 8 characters</string>
 
     <!-- chat -->
     <!-- chat activity -->

@@ -107,17 +107,31 @@ public class ProfileSetupActivity extends AppCompatActivity {
         }else if (TextUtils.isEmpty(newAgeString)) {
             ageEditText.setError(getResources().getString(R.string.noAgeStringWarning));
         }else{
-            if(checkAgeFormat(newAgeString)) {
-                if (selected == RADIO_ID_MALE) {
-                    updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderMale));
-                } else if (selected == RADIO_ID_FEMALE) {
-                    updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderFemale));
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.profileSetupMessageGenderWrong), Toast.LENGTH_SHORT).show();
+            if(checkDescription(newDescription)){
+                if(checkAgeFormat(newAgeString)) {
+                    if (selected == RADIO_ID_MALE) {
+                        updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderMale));
+                    } else if (selected == RADIO_ID_FEMALE) {
+                        updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderFemale));
+                    } else {
+                        Toast.makeText(this, getResources().getString(R.string.profileSetupMessageGenderWrong), Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(this, getResources().getString(R.string.profileSetupMessageAgeWrong), Toast.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(this, getResources().getString(R.string.profileSetupMessageAgeWrong), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.profileSetupMessageDescriptionWrong), Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+
+    private boolean checkDescription(String des){
+        int lengthDes = des.length();
+        if(lengthDes>10&&lengthDes<250){
+            return true;
+        }else{
+            return false;
         }
     }
 

@@ -117,26 +117,40 @@ public class RegisterActivity extends AppCompatActivity {
         }else if (TextUtils.isEmpty(confirmPassword)) {
             registerConfirmPassword.setError(getResources().getString(R.string.noConfirmPasswordStringWarning));
         }else{
-            if(password.matches(confirmPassword)) {
-                progressDialog.show();
-                userAuthenticate.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    addUserToDB();
-                                } else {
-                                    Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
-                                            Toast.LENGTH_SHORT).show();
+            if(checkPasswordLength(password)){
+                if(password.matches(confirmPassword)) {
+                    progressDialog.show();
+                    userAuthenticate.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        addUserToDB();
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessageRegisterFailed),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                    progressDialog.dismiss();
                                 }
-                                progressDialog.dismiss();
-                            }
-                        });
-            } else {
-                progressDialog.dismiss();
-                Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
+                            });
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordUnmatched),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(RegisterActivity.this, getResources().getString(R.string.registerMessagePasswordTooShort),
                         Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private boolean checkPasswordLength(String password) {
+        int passwordLength = password.length();
+        if(passwordLength<8){
+            return false;
+        }else{
+            return true;
         }
     }
 
