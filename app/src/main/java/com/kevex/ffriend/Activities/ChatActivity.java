@@ -60,7 +60,7 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseFirestore database;
     private DocumentReference chatReference;
     private FirebaseUser currentUser;
-    private DocumentReference currentUserRefrence;
+    private DocumentReference currentUserReference;
 
     private RecyclerView chatsView;
     private RecyclerView.LayoutManager chatLinearLayout;
@@ -92,7 +92,7 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
-        currentUserRefrence = database.collection(getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
+        currentUserReference = database.collection(getResources().getString(R.string.dbUsers)).document(currentUser.getUid());
 
 
         messageInput = findViewById(R.id.chatInputMessage);
@@ -176,7 +176,30 @@ public class ChatActivity extends AppCompatActivity {
 
     private void addListenerOnDatabaseReference() {
         // get the chat id
-        currentUserRefrence.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        currentUserReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen currentUserReference failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    // check if user met array is null and not empty
+                    // also check if current user and other user are already met
+                    ArrayList<String> usersMet = (ArrayList<String>) snapshot.get(getResources().getString(R.string.dbUsersMet));
+                    if(usersMet != null){
+                        if(usersMet.contains(otherUser.getUserID())){
+                            hideInputMessage();
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "Current currentUserReference data: null");
+                }
+            }
+        });
+        currentUserReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -190,39 +213,29 @@ public class ChatActivity extends AppCompatActivity {
                             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                                 @Nullable FirebaseFirestoreException e) {
                                 if (e != null) {
-                                    Log.w(TAG, "Listen failed.", e);
+                                    Log.w(TAG, "Listen chatReference failed.", e);
                                     return;
                                 }
 
                                 if (snapshot != null && snapshot.exists()) {
-                                    ArrayList<String> usersMetArray =
-                                            (ArrayList<String>) snapshot.get(getResources().getString(R.string.dbUsersMet));
                                     // check if user met array is null and not empty
                                     // also check if current user and other user are already met
-                                    if( usersMetArray != null && usersMetArray.size()>0){
-                                        if(usersMetArray.contains(otherUser.getUserID())){
-                                            hideInputMessage();
-                                        }else{
-                                            messageList.clear();
-                                            ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
-                                            messageList.addAll(newArray);
-                                            chatAdapter.notifyDataSetChanged();
-                                            animationToGoDown();
-                                            checkMaxMessagesReach();
-                                        }
-                                    }else{
-                                        Log.e(TAG,"usersMetArray is null or empty please check Firestore");
-                                    }
+                                    messageList.clear();
+                                    ArrayList<Map> newArray = (ArrayList<Map>) snapshot.get(getResources().getString(R.string.dbMessages));
+                                    messageList.addAll(newArray);
+                                    chatAdapter.notifyDataSetChanged();
+                                    animationToGoDown();
+                                    checkMaxMessagesReach();
                                 } else {
-                                    Log.d(TAG, "Current data: null");
+                                    Log.d(TAG, "Current chatReference data: null");
                                 }
                             }
                         });
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "currentUserReference no such document");
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                    Log.d(TAG, "currentUserReference get failed with ", task.getException());
                 }
             }
         });
