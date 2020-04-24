@@ -78,7 +78,8 @@ public class ChatActivity extends AppCompatActivity {
     private TextView titleGenderToolBar;
 
     private User otherUser;
-
+    // no matter if they reached max conversation limit or not they cant exchange messages
+    private Boolean alreadyMet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,7 +249,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void checkMaxMessagesReach() {
-        if(messageList.size()>4){
+        if(messageList.size()>4||alreadyMet){
             hideInputMessage();
         }else{
             maxMessagesIconLinearLayout.setVisibility(View.GONE);
@@ -278,7 +279,27 @@ public class ChatActivity extends AppCompatActivity {
         chatsView.setAdapter(chatAdapter);
         chatsView.setItemAnimator(new DefaultItemAnimator());
 
-
+        currentUserReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        ArrayList<String> arrayUserMet = (ArrayList<String>) document.get(getResources().getString(R.string.dbUsersMet));
+                        if(arrayUserMet != null) {
+                            if (arrayUserMet.contains(otherUser.getUserID())) {
+                                alreadyMet = true;
+                                hideInputMessage();
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "No such document");
+                    }
+                } else {
+                    Log.e(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
         enableSendMessage();
     }
 
