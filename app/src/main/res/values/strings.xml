@@ -83,4 +83,9 @@
     <!-- profile activity -->
     <string name="startChatException">User that cannot be found!</string>
     <string name="chat_message_chat_view_message">cannot display message</string>
+    <string name="chatMessageExceedLimit">Message is too long, make sure it is less than 250 characters</string>
+
+    <!-- chat -->
+    <!-- chat activity -->
+
 </resources>

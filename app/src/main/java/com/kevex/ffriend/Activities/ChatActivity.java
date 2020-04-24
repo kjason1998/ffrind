@@ -1,5 +1,6 @@
 package com.kevex.ffriend.Activities;
 
+import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kevex.ffriend.Adapter.MessageAdapter;
+import com.kevex.ffriend.Model.Chat;
 import com.kevex.ffriend.Model.User;
 import com.kevex.ffriend.R;
 import com.kevex.ffriend.view.QrCodeView;
@@ -138,13 +140,28 @@ public class ChatActivity extends AppCompatActivity {
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
                     String newStringMessage = messageInput.getText().toString();
-                    putNewMessageInFirestore(newStringMessage);
+                    sendMessageToFirestore(newStringMessage);
                     messageInput.setText("");
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    /**
+     * Only able to send when it is not empty and less than 250 characters
+     * @param newStringMessage
+     */
+    private void sendMessageToFirestore(String newStringMessage) {
+        // if empty do not need to give Toast like all messaging apps
+        if(!newStringMessage.isEmpty()){
+            if(newStringMessage.length()<251){
+                putNewMessageInFirestore(newStringMessage);
+            }else{
+                Toast.makeText(ChatActivity.this,getResources().getString(R.string.chatMessageExceedLimit),Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void putNewMessageInFirestore(String message) {

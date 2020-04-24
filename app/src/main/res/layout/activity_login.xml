@@ -23,18 +23,31 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="0.6"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:src="@drawable/main_logo"/>
+                android:orientation="vertical"
+                android:gravity="bottom">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5"
+                    android:src="@drawable/main_logo"
+                    android:background="@color/colorPrimary"/>
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,6 +89,32 @@
                                 android:paddingEnd="@dimen/verticalInputPadding"                                android:paddingBottom="@dimen/bottomInputPadding"
                                 android:paddingTop="@dimen/verticalInputPadding"
                                 />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_horizontal">
+
+                                <Button
+                                    android:id="@+id/loginBtn"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="login"
+                                    android:text="@string/loginLoginButton"
+                                    android:padding="10dp"
+                                    android:layout_marginEnd="7.5dp"
+                                    android:background="@drawable/background_button_green"/>
+                                <Button
+                                    android:id="@+id/registerActivityButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:onClick="changeToRegister"
+                                    android:text="@string/loginSingUpButton"
+                                    android:padding="10dp"
+                                    android:layout_marginStart="7.5dp"
+                                    android:background="@drawable/background_button_pink"/>
+                            </LinearLayout>
                         </LinearLayout>
                     </RelativeLayout>
                     <RelativeLayout
@@ -85,25 +124,5 @@
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
-
-
-        <Button
-            android:id="@+id/loginBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="login"
-            android:text="@string/loginLoginButton"
-            android:padding="10dp"
-            android:background="@drawable/background_button_green"/>
-
-        <Button
-            android:id="@+id/registerActivityButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="changeToRegister"
-            android:text="@string/loginSingUpButton"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/background_button_pink"/>
     </LinearLayout>
 </RelativeLayout>
