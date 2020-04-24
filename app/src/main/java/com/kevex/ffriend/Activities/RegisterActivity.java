@@ -99,7 +99,6 @@ public class RegisterActivity extends AppCompatActivity {
      * @param view
      */
     public void register(View view){
-        progressDialog.show();
 
         email = registerEmail.getText().toString();
         password = registerPassword.getText().toString();
@@ -107,18 +106,19 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = registerPhoneNumber.getText().toString();
         username = registerUserName.getText().toString();
 
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(username)) {
+            registerUserName.setError(getResources().getString(R.string.noUsernameStringWarning));
+        }else if (TextUtils.isEmpty(email)) {
             registerEmail.setError(getResources().getString(R.string.noEmailStringWarning));
+        }else if (TextUtils.isEmpty(phoneNumber)) {
+            registerPhoneNumber.setError(getResources().getString(R.string.noPhoneNumberStringWarning));
         } else if (TextUtils.isEmpty(password)) {
             registerPassword.setError(getResources().getString(R.string.noPasswordStringWarning));
-        } else if (TextUtils.isEmpty(confirmPassword)) {
+        }else if (TextUtils.isEmpty(confirmPassword)) {
             registerConfirmPassword.setError(getResources().getString(R.string.noConfirmPasswordStringWarning));
-        } else if (TextUtils.isEmpty(phoneNumber)) {
-            registerPhoneNumber.setError(getResources().getString(R.string.noPhoneNumberStringWarning));
-        } else if (TextUtils.isEmpty(username)) {
-            registerUserName.setError(getResources().getString(R.string.noUsernameStringWarning));
-        } else{
+        }else{
             if(password.matches(confirmPassword)) {
+                progressDialog.show();
                 userAuthenticate.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override

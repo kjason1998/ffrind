@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -99,25 +100,25 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         String newDescription = bioEditText.getText().toString();
         String newAgeString = ageEditText.getText().toString();
-        String newAge = newAgeString;
         int selected = radioGroupGender.getCheckedRadioButtonId();
 
-        if(!newDescription.isEmpty() && !newAgeString.isEmpty()){
+        if (TextUtils.isEmpty(newDescription)) {
+            bioEditText.setError(getResources().getString(R.string.noBioStringWarning));
+        }else if (TextUtils.isEmpty(newAgeString)) {
+            ageEditText.setError(getResources().getString(R.string.noAgeStringWarning));
+        }else{
             if(checkAgeFormat(newAgeString)) {
                 if (selected == RADIO_ID_MALE) {
-                    updateDetail(newDescription, newAge, getResources().getString(R.string.profileGenderMale));
+                    updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderMale));
                 } else if (selected == RADIO_ID_FEMALE) {
-                    updateDetail(newDescription, newAge, getResources().getString(R.string.profileGenderFemale));
+                    updateDetail(newDescription, newAgeString, getResources().getString(R.string.profileGenderFemale));
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.profileSetupMessageGenderWrong)+ " "+ selected, Toast.LENGTH_SHORT).show();
                 }
             }else{
                 Toast.makeText(this, getResources().getString(R.string.profileSetupMessageAgeWrong), Toast.LENGTH_SHORT).show();
             }
-        }else{
-            Toast.makeText(this,R.string.profileSetupMessageInputEmpty,Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private boolean checkAgeFormat(String age){

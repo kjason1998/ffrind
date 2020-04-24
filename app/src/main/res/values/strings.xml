@@ -93,6 +93,8 @@
     <string name="loginResePasswordSuccess">Please check your email, it may take up to 5 minutes</string>
     <string name="loginWarningResetPasswordUnsuccess">Please check the email or make a new account with this email address</string>
     <string name="registerWarningInputEmpty">Please fill all the fields</string>
+    <string name="noBioStringWarning">Please fill about your self</string>
+    <string name="noAgeStringWarning">Please fill your age</string>
 
     <!-- chat -->
     <!-- chat activity -->
