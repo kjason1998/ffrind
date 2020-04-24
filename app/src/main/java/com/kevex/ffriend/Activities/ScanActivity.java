@@ -196,8 +196,8 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
         Log.d(TAG, "handleResult: " + resultText);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("scan result");
-        builder.setMessage(resultText);
+        builder.setTitle("scan expected");
+        builder.setMessage("please press ok to add the points");
         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -206,12 +206,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 finish();
             }
         });
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
