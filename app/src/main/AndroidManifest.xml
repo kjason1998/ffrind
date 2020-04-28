@@ -43,7 +43,7 @@
             android:label="Register" />
         <activity
             android:name=".Activities.LoginActivity"
-            android:label="Login">
+            android:label="Ffrind">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
